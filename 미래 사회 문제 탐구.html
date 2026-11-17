@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>미래 사회 문제 탐구</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* 레이아웃: 예시 누리집처럼 밝은 바탕 + 흰 카드. 기사는 신문 지면처럼, 설명글은 교과서 글처럼 구분한다. */
+  --bg: #f4f3ef;
+  --card: #ffffff;
+  --paper: #fbfaf6;
+  --ink: #1d1d1b;
+  --ink-2: #4b4a46;
+  --muted: #7d7a73;
+  --line: #e3e0d8;
+  --accent: #1f3a5f;
+  --accent-soft: #e8eef6;
+  --hl: #ffe17a;
+  --gloss: #fdf8e4;
+  --gloss-line: #efe3b0;
+  --birth: #b8456d;  --birth-soft: #fbe9ef;
+  --env: #237a4f;    --env-soft: #e3f3ea;
+  --ai: #4b46b0;     --ai-soft: #ecebfb;
+  /* 그래프 색 (검증된 범주 팔레트) */
+  --s1: #2a78d6; --s1-proj: #86b6ef; --s2: #eb6834; --s3: #1baf7a;
+  --grid: #e9e7e0; --axis: #c3c2b7;
+  --font-display: "Jua", "Noto Sans KR", system-ui, sans-serif;
+  --font-head: "Noto Serif KR", "Nanum Myeongjo", serif;
+  --font-body: "Noto Sans KR", system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121211; --card: #1c1c1a; --paper: #1f1e1b;
+    --ink: #f0efec; --ink-2: #cfcdc5; --muted: #9a978f; --line: #33322e;
+    --accent: #a9c3e8; --accent-soft: #23303f;
+    --hl: rgba(250, 204, 21, 0.38); --gloss: #24221a; --gloss-line: #3d3825;
+    --birth: #ec8db0; --birth-soft: #3a2230;
+    --env: #6cc897;   --env-soft: #1c3226;
+    --ai: #a7a3f3;    --ai-soft: #27264a;
+    --s1: #3987e5; --s1-proj: #1c5cab; --s2: #d95926; --s3: #199e70;
+    --grid: #2c2c2a; --axis: #45443f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121211; --card: #1c1c1a; --paper: #1f1e1b;
+  --ink: #f0efec; --ink-2: #cfcdc5; --muted: #9a978f; --line: #33322e;
+  --accent: #a9c3e8; --accent-soft: #23303f;
+  --hl: rgba(250, 204, 21, 0.38); --gloss: #24221a; --gloss-line: #3d3825;
+  --birth: #ec8db0; --birth-soft: #3a2230;
+  --env: #6cc897;   --env-soft: #1c3226;
+  --ai: #a7a3f3;    --ai-soft: #27264a;
+  --s1: #3987e5; --s1-proj: #1c5cab; --s2: #d95926; --s3: #199e70;
+  --grid: #2c2c2a; --axis: #45443f;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.8;
+  word-break: keep-all; overflow-wrap: break-word;
+}
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--s1); outline-offset: 2px; border-radius: 6px; }
+h1, h2, h3 { text-wrap: balance; }
+.wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px 64px; }
+[hidden] { display: none !important; }
+
+/* ---------- 첫 화면 ---------- */
+.home-head { padding: 28px 0 8px; text-align: center; }
+.home-head h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(30px, 5.4vw, 44px); line-height: 1.3; margin: 0 0 10px; letter-spacing: -0.01em; }
+.home-head p { margin: 0; color: var(--ink-2); font-size: 18px; }
+.topics { display: grid; gap: 14px; }
+.topic-card { display: grid; grid-template-columns: 64px 1fr auto; gap: 18px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; text-decoration: none; color: var(--ink); transition: border-color .15s, transform .15s; }
+.topic-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.topic-card .ico { width: 64px; height: 64px; border-radius: 14px; display: grid; place-items: center; }
+.topic-card .ico svg { width: 34px; height: 34px; }
+.topic-card h2 { font-family: var(--font-display); font-weight: 400; font-size: 26px; margin: 0; line-height: 1.3; }
+.topic-card p { margin: 2px 0 0; color: var(--ink-2); font-size: 15.5px; line-height: 1.6; }
+.topic-card .meta { display: block; margin-top: 6px; font-size: 13px; color: var(--muted); }
+.topic-card .arrow { font-size: 24px; color: var(--accent); }
+.c-birth .ico { background: var(--birth-soft); color: var(--birth); }
+.c-env .ico { background: var(--env-soft); color: var(--env); }
+.c-ai .ico { background: var(--ai-soft); color: var(--ai); }
+.site-foot { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); line-height: 1.7; }
+.site-foot p { margin: 0 0 6px; }
+
+/* ---------- 주제 화면 ---------- */
+.topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 18px; }
+.back { display: inline-flex; align-items: center; gap: 6px; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 14px; text-decoration: none; color: var(--ink); }
+.switch { display: flex; gap: 6px; flex-wrap: wrap; }
+.switch a { font-size: 14px; text-decoration: none; color: var(--ink-2); padding: 6px 12px; border-radius: 999px; border: 1px solid transparent; }
+.switch a[aria-current="page"] { background: var(--card); border-color: var(--line); color: var(--ink); font-weight: 700; }
+.page-head .eyebrow { font-size: 14px; color: var(--muted); margin: 0; }
+.page-head h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(34px, 6vw, 46px); margin: 2px 0 4px; line-height: 1.25; }
+.page-head .q { margin: 0; font-size: 18px; color: var(--ink-2); }
+.v-birth .page-head h1 { color: var(--birth); }
+.v-env .page-head h1 { color: var(--env); }
+.v-ai .page-head h1 { color: var(--ai); }
+.toc { margin: 22px 0 6px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px 12px; }
+.toc-h { margin: 0 0 6px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; }
+.toc li + li { border-top: 1px solid var(--line); }
+.toc ol button { all: unset; box-sizing: border-box; cursor: pointer; display: grid; grid-template-columns: 4.6em 1fr; gap: 10px; align-items: baseline; width: 100%; padding: 8px 2px; font-size: 15.5px; line-height: 1.55; color: var(--ink); }
+.toc ol button:hover .tt { text-decoration: underline; text-underline-offset: 3px; }
+.toc ol button:focus-visible { outline: 3px solid var(--s1); outline-offset: 2px; border-radius: 6px; }
+.toc .kind { font-size: 12.5px; font-weight: 700; color: var(--ink-2); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; text-align: center; padding: 0 4px; }
+.toc .kind-f { color: var(--accent); background: var(--accent-soft); border-color: transparent; }
+.toc-more { margin: 8px 0 0; display: flex; gap: 8px; flex-wrap: wrap; }
+.toc-more button { font: inherit; font-size: 13.5px; cursor: pointer; background: var(--accent-soft); color: var(--accent); border: 0; border-radius: 8px; padding: 4px 10px; }
+
+.sec { margin-top: 44px; scroll-margin-top: 16px; }
+.sec-title { display: flex; align-items: center; gap: 12px; margin: 0 0 6px; font-size: 24px; line-height: 1.4; font-weight: 700; }
+.sec-title .n { flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: var(--card); display: grid; place-items: center; font-size: 17px; }
+.sec-lead { margin: 0 0 18px 46px; color: var(--ink-2); font-size: 16px; }
+
+/* 기사: 신문 지면 */
+.articles { display: grid; gap: 22px; }
+.news { background: var(--paper); border: 1px solid var(--line); border-radius: 4px; padding: 0 26px 22px; box-shadow: 0 1px 0 var(--line); }
+.masthead { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; border-bottom: 3px double var(--ink); padding: 12px 0 6px; font-size: 13px; color: var(--ink-2); }
+.masthead .paper-name { font-family: var(--font-head); font-weight: 900; font-size: 16px; color: var(--ink); letter-spacing: 0.04em; }
+.masthead .sect { display: inline-block; font-weight: 700; color: var(--card); background: var(--ink-2); border-radius: 3px; padding: 0 7px; margin-right: 8px; font-size: 12px; line-height: 1.7; }
+.news h3 { font-family: var(--font-head); font-weight: 900; font-size: clamp(23px, 3.6vw, 29px); line-height: 1.42; margin: 18px 0 8px; letter-spacing: -0.015em; }
+.news .sub { margin: 0 0 14px; padding-left: 12px; border-left: 3px solid var(--ink-2); font-weight: 700; color: var(--ink-2); font-size: 16px; line-height: 1.65; }
+.news .sub span { display: block; }
+.news .lead { font-weight: 500; color: var(--ink); border-top: 1px solid var(--line); padding-top: 14px; }
+.news p { margin: 0 0 12px; max-width: 68ch; }
+.news .basis { margin: 16px 0 0; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+
+/* 설명글: 비문학 읽기 */
+.essay { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 28px 30px 26px; }
+.essay h3 { font-size: 23px; line-height: 1.45; margin: 0 0 18px; font-weight: 700; }
+.essay p.para { margin: 0 0 16px; max-width: 72ch; }
+.t { font-weight: 700; background: linear-gradient(transparent 62%, var(--hl) 62%); padding: 0 1px; }
+
+/* 그림·그래프 */
+figure.fig { margin: 18px 0 18px; padding: 16px 16px 12px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
+.essay figure.fig { background: var(--paper); }
+.fig-title { font-size: 15px; font-weight: 700; margin: 0 0 2px; line-height: 1.5; }
+.fig-unit { font-size: 13px; color: var(--muted); margin: 0 0 8px; }
+figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; line-height: 1.6; }
+.chart { width: 100%; min-height: 40px; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { font-family: var(--font-body); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13.5px; color: var(--ink-2); margin: 4px 0 10px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+details.table-view { margin-top: 8px; font-size: 13.5px; }
+details.table-view summary { cursor: pointer; color: var(--accent); width: fit-content; }
+details.table-view table { border-collapse: collapse; margin-top: 8px; width: 100%; max-width: 480px; font-variant-numeric: tabular-nums; }
+details.table-view th, details.table-view td { border-bottom: 1px solid var(--line); padding: 4px 8px; text-align: left; }
+details.table-view td.num, details.table-view th.num { text-align: right; }
+
+/* 가로 막대 */
+.hbars { display: grid; gap: 10px; margin: 6px 0 2px; }
+.hbar { display: grid; grid-template-columns: minmax(6.5em, 9em) 1fr; align-items: center; gap: 10px; font-size: 14.5px; }
+.hbar .lab { color: var(--ink-2); line-height: 1.35; }
+.hbar .track { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.hbar .bar { height: 20px; background: var(--s1); border-radius: 0 4px 4px 0; min-width: 2px; }
+.hbar .val { font-weight: 700; font-size: 14px; color: var(--ink); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* 100칸 그림 */
+.waffle { display: grid; grid-template-columns: repeat(20, 1fr); gap: 3px; max-width: 520px; margin: 6px 0 6px; }
+.waffle i { aspect-ratio: 1; border-radius: 3px; display: block; }
+@media (max-width: 520px) { .waffle { grid-template-columns: repeat(10, 1fr); max-width: 300px; } }
+
+/* 100% 막대 */
+.stack-row { display: grid; grid-template-columns: 4.2em 1fr; gap: 10px; align-items: center; margin: 8px 0; font-size: 14px; }
+.stack-row .yr { font-weight: 700; color: var(--ink-2); }
+.stack { display: flex; gap: 2px; height: 28px; }
+.stack div { border-radius: 4px; color: #fff; font-size: 12.5px; font-weight: 700; display: flex; align-items: center; padding-left: 7px; white-space: nowrap; overflow: visible; min-width: 0; }
+
+/* 연표 */
+.timeline { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 0; }
+.timeline li { display: grid; grid-template-columns: 6.6em 18px 1fr; gap: 10px; align-items: start; font-size: 14.5px; line-height: 1.55; }
+.timeline .when { color: var(--ink-2); font-weight: 700; text-align: right; padding: 6px 0; font-variant-numeric: tabular-nums; }
+.timeline .dot { position: relative; height: 100%; }
+.timeline .dot::before { content: ""; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--line); }
+.timeline li:first-child .dot::before { top: 14px; }
+.timeline li:last-child .dot::before { bottom: calc(100% - 14px); }
+.timeline .dot::after { content: ""; position: absolute; left: 3px; top: 10px; width: 12px; height: 12px; border-radius: 50%; background: var(--card); border: 2px solid var(--muted); }
+.timeline .fail .dot::after { border-color: var(--s2); background: var(--s2); }
+.timeline .next .dot::after { border-style: dashed; }
+.timeline .what { padding: 6px 0 10px; }
+.timeline .what small { display: block; color: var(--muted); font-size: 13px; }
+
+/* 흐름도 */
+.flow { list-style: none; padding: 0; margin: 6px 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; counter-reset: flow; }
+.flow li { counter-increment: flow; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 14.5px; line-height: 1.55; position: relative; }
+.flow li b { display: block; font-size: 15.5px; margin-bottom: 2px; }
+.flow li b::before { content: counter(flow) ". "; color: var(--ai); }
+@media (max-width: 600px) { .flow { grid-template-columns: 1fr; } }
+
+/* 표시 예시 */
+.labels { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.label-card { border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: var(--paper); font-size: 14px; line-height: 1.55; }
+.label-card b { display: block; font-size: 15px; margin-bottom: 6px; }
+.mock { position: relative; height: 92px; border-radius: 6px; margin-bottom: 8px; background: linear-gradient(180deg, #9cc3e6 0%, #cfe2f1 55%, #7fb07a 56%, #5f9a5c 100%); overflow: hidden; }
+.mock .sun { position: absolute; width: 22px; height: 22px; border-radius: 50%; background: #ffd966; top: 14px; right: 26px; }
+.mock .badge { position: absolute; left: 8px; bottom: 8px; background: rgba(0,0,0,.72); color: #fff; font-size: 11.5px; font-weight: 700; padding: 2px 7px; border-radius: 4px; }
+.mock .wm { position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.0) 0 10px, rgba(255,255,255,0.22) 10px 11px); }
+.mock .wm-tag { position: absolute; right: 8px; bottom: 8px; background: #fff; color: #1d1d1b; font-size: 11.5px; padding: 1px 6px; border-radius: 4px; border: 1px dashed #1d1d1b; }
+@media (max-width: 560px) { .labels { grid-template-columns: 1fr; } }
+
+
+/* 낱말 풀이 */
+.gloss { margin-top: 44px; background: var(--gloss); border: 1px solid var(--gloss-line); border-radius: 12px; padding: 18px 22px; }
+.gloss h2 { font-size: 18px; margin: 0 0 8px; }
+.gloss dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 0 18px; font-size: 15px; }
+.gloss dt { font-weight: 700; padding: 7px 0; border-bottom: 1px dashed var(--gloss-line); }
+.gloss dd { margin: 0; padding: 7px 0; border-bottom: 1px dashed var(--gloss-line); color: var(--ink-2); }
+.gloss dt:last-of-type, .gloss dd:last-of-type { border-bottom: 0; }
+@media (max-width: 520px) { .gloss dl { grid-template-columns: 1fr; } .gloss dt { border-bottom: 0; padding-bottom: 0; } }
+
+/* 출처 */
+.refs { margin-top: 32px; font-size: 13.5px; color: var(--ink-2); line-height: 1.65; }
+.refs h2 { font-size: 16px; margin: 0 0 8px; color: var(--ink); }
+.refs h3 { font-size: 14px; margin: 14px 0 4px; color: var(--ink); }
+.refs ol { margin: 0; padding-left: 1.4em; }
+.refs li { margin-bottom: 4px; }
+.refs a { word-break: break-all; }
+
+@media (max-width: 640px) {
+  body { font-size: 16.5px; }
+  .wrap { padding: 20px 16px 48px; }
+    .topic-card { grid-template-columns: 52px 1fr; padding: 16px; gap: 14px; }
+  .topic-card .ico { width: 52px; height: 52px; }
+  .topic-card .arrow { display: none; }
+  .news { padding: 0 16px 18px; }
+  .essay { padding: 20px 16px; }
+  .sec-lead { margin-left: 0; }
+  .timeline li { grid-template-columns: 5.4em 18px 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+
+<!-- ===================== 첫 화면 ===================== -->
+<main class="wrap" data-view="home">
+  <header class="home-head">
+    <h1>미래 사회에는 어떤 문제가 생길까요?</h1>
+    <p>조사하고 싶은 주제를 골라 관련 기사와 전망 자료를 살펴보세요.</p>
+  </header>
+
+
+  <nav class="topics" aria-label="주제 고르기">
+    <a class="topic-card c-birth" href="#birth">
+      <span class="ico" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="8" r="3.5"/><path d="M5 27v-7a6 6 0 0 1 12 0v7"/><circle cx="23" cy="15" r="2.6"/><path d="M19 27v-4a4 4 0 0 1 8 0v4"/></svg>
+      </span>
+      <span>
+        <h2>저출산</h2>
+        <p>태어나는 아기가 줄어들면 우리 사회는 어떻게 달라질까요?</p>
+        <span class="meta">기사 3편 · 미래 전망 글 1편</span>
+      </span>
+      <span class="arrow" aria-hidden="true">→</span>
+    </a>
+    <a class="topic-card c-env" href="#environment">
+      <span class="ico" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 5a3 3 0 0 1 6 0v13.2a6 6 0 1 1-6 0Z"/><path d="M16 12v9"/><circle cx="16" cy="23" r="2.2" fill="currentColor"/><path d="M24 9h3M24 13h2"/></svg>
+      </span>
+      <span>
+        <h2>환경오염</h2>
+        <p>더 뜨거워지는 지구, 늘어나는 플라스틱. 미래에는 어떤 일이 생길까요?</p>
+        <span class="meta">기사 3편 · 미래 전망 글 1편</span>
+      </span>
+      <span class="arrow" aria-hidden="true">→</span>
+    </a>
+    <a class="topic-card c-ai" href="#ai-crime">
+      <span class="ico" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="16" height="16" rx="3"/><path d="M12 4v4M20 4v4M12 24v4M20 24v4M4 12h4M4 20h4M24 12h4M24 20h4"/><path d="M13 19l3-7 3 7M14 17h4"/></svg>
+      </span>
+      <span>
+        <h2>AI 기술 범죄 악용</h2>
+        <p>인공지능이 범죄에 쓰이면 진짜와 가짜를 어떻게 구별할 수 있을까요?</p>
+        <span class="meta">기사 3편 · 미래 전망 글 1편</span>
+      </span>
+      <span class="arrow" aria-hidden="true">→</span>
+    </a>
+  </nav>
+
+  <footer class="site-foot">
+    <p>이 누리집의 기사는 실제 언론 보도와 정부·연구 기관의 공식 자료를 바탕으로, 초등학생이 읽기 쉽게 다시 쓴 것입니다. ‘미래탐구신문’은 학습용으로 붙인 이름이며 실제 신문사가 아닙니다. 원래 기사와 자료는 각 주제 화면 아래 ‘출처’에서 확인할 수 있습니다.</p>
+    <p>관련 성취기준 [6과16-01] 미래 사회에 일어날 수 있는 문제를 조사하고, 문제를 해결하는 데 과학이 기여할 수 있는 방법을 토의할 수 있다. · 자료 기준일 2026년 11월</p>
+  </footer>
+</main>
+
+<!-- ===================== 저출산 ===================== -->
+<main class="wrap v-birth" data-view="birth" hidden>
+  <div class="topbar">
+    <a class="back" href="#home">← 처음으로</a>
+    <nav class="switch" aria-label="다른 주제">
+      <a href="#birth" aria-current="page">저출산</a>
+      <a href="#environment">환경오염</a>
+      <a href="#ai-crime">AI 기술 범죄 악용</a>
+    </nav>
+  </div>
+  <header class="page-head">
+    <p class="eyebrow">미래 사회 문제 탐구 ①</p>
+    <h1>저출산</h1>
+    <p class="q">태어나는 아기가 줄어들면 우리 사회는 어떻게 달라질까요?</p>
+  </header>
+  <nav class="toc" aria-label="이 화면의 자료 목록">
+    <p class="toc-h">이 화면의 자료</p>
+    <ol>
+      <li><button type="button" data-jump="birth-a1"><span class="kind">기사 1</span><span class="tt">아기 울음소리 2년 연속 커졌지만… 출산율은 여전히 OECD 최하위</span></button></li>
+      <li><button type="button" data-jump="birth-a2"><span class="kind">기사 2</span><span class="tt">올해 초등학교 1학년, 처음으로 30만 명 아래로</span></button></li>
+      <li><button type="button" data-jump="birth-a3"><span class="kind">기사 3</span><span class="tt">노인 인구 처음으로 20% 넘어… 공식 ‘초고령사회’ 들어서</span></button></li>
+      <li><button type="button" data-jump="birth-future"><span class="kind kind-f">전망</span><span class="tt">인구가 줄어드는 미래, 우리 사회는 어떻게 달라질까요?</span></button></li>
+    </ol>
+    <p class="toc-more"><button type="button" data-jump="birth-gloss">낱말 풀이</button><button type="button" data-jump="birth-refs">출처 목록</button></p>
+  </nav>
+
+  <section class="sec" id="birth-news">
+    <h2 class="sec-title"><span class="n">1</span>지금 어떤 일이 일어나고 있을까요?</h2>
+    <p class="sec-lead">최근 보도와 공식 통계를 바탕으로 정리한 기사 3편입니다.</p>
+
+    <div class="articles">
+      <article class="news" id="birth-a1">
+        <div class="masthead"><span class="paper-name">미래탐구신문</span><span><span class="sect">사회·인구</span>2026년 8월 26일 발표 자료</span></div>
+        <h3>아기 울음소리 2년 연속 커졌지만… 출산율은 여전히 OECD 최하위</h3>
+        <p class="sub"><span>지난해 출생아 25만 4천여 명, 15년 만에 가장 많이 늘어</span><span>합계출산율 0.80명… 인구 유지에 필요한 2.1명에는 크게 못 미쳐</span></p>
+        <p class="lead">지난해 우리나라에서 태어난 아기가 2년 연속 늘었다. 늘어난 폭은 15년 만에 가장 컸다. 그러나 합계출산율은 0.80명으로, 여전히 경제협력개발기구(OECD) 회원국 가운데 가장 낮은 수준이다.</p>
+        <p>국가데이터처가 발표한 ‘2025년 출생 통계’에 따르면 2025년 한 해 동안 태어난 아기는 약 25만 4천 명이었다. 2024년보다 1만 6천 명(6.7%) 늘어난 숫자다. <span class="t">출생아</span> 수는 2016년부터 8년 동안 줄곧 줄어들다가 2024년에 다시 늘었고, 2025년에도 늘어나는 흐름을 이어 갔다.</p>
+        <p>여성 한 명이 평생 낳을 것으로 예상되는 평균 아기 수를 뜻하는 <span class="t">합계출산율</span>도 2024년 0.75명에서 0.80명으로 올랐다. 0.8명대를 되찾은 것은 2021년(0.81명) 이후 4년 만이다. 한국보건사회연구원은 최근 출생아가 늘어난 것이 결혼하는 사람이 다시 늘어난 것과 관련이 깊다고 분석했다. 실제로 결혼 건수는 2024년에 14.8%, 2025년에 8.1% 늘었다.</p>
+        <p>하지만 마음을 놓기는 이르다. 인구가 줄지 않고 지금 수준을 유지하려면 합계출산율이 약 2.1명은 되어야 하는데, 0.80명은 그 절반에도 한참 못 미친다. 2024년 기준 <span class="t">OECD</span> 38개 회원국의 평균 합계출산율은 1.40명이었고, 1명보다 낮은 나라는 우리나라 하나뿐이었다.</p>
+        <figure class="fig">
+          <p class="fig-title">해마다 태어난 아기 수 (2015~2025년)</p>
+          <p class="fig-unit">단위: 만 명</p>
+          <div class="chart" data-chart="birth-births" role="img" aria-label="출생아 수는 2015년 43.8만 명에서 2023년 23.0만 명까지 줄었다가 2025년 25.4만 명으로 늘었다."></div>
+          <figcaption>자료: 국가데이터처 「출생 통계」</figcaption>
+          <details class="table-view"><summary>표로 보기</summary>
+            <table><thead><tr><th>연도</th><th class="num">출생아 수(명)</th></tr></thead><tbody>
+              <tr><td>2015년</td><td class="num">438,420</td></tr><tr><td>2016년</td><td class="num">406,243</td></tr><tr><td>2017년</td><td class="num">357,771</td></tr><tr><td>2018년</td><td class="num">326,822</td></tr><tr><td>2019년</td><td class="num">302,676</td></tr><tr><td>2020년</td><td class="num">272,337</td></tr><tr><td>2021년</td><td class="num">260,562</td></tr><tr><td>2022년</td><td class="num">249,186</td></tr><tr><td>2023년</td><td class="num">230,028</td></tr><tr><td>2024년</td><td class="num">238,343</td></tr><tr><td>2025년</td><td class="num">254,341</td></tr>
+            </tbody></table></details>
+        </figure>
+        <p class="basis">이 기사는 국가데이터처 「2025년 출생 통계」와 이를 다룬 언론 보도, 한국보건사회연구원 보고서를 바탕으로 다시 썼어요. 원래 자료는 아래 출처 1~5번에 있어요.</p>
+      </article>
+
+      <article class="news" id="birth-a2">
+        <div class="masthead"><span class="paper-name">미래탐구신문</span><span><span class="sect">교육</span>2026년 1월 교육부 자료</span></div>
+        <h3>올해 초등학교 1학년, 처음으로 30만 명 아래로</h3>
+        <p class="sub"><span>3년 만에 4명 중 1명꼴로 줄어</span><span>신입생이 한 명도 없는 초등학교 210곳… 5년 사이 81% 늘어</span></p>
+        <p class="lead">올해 초등학교에 입학한 1학년 어린이가 처음으로 30만 명 아래로 내려간 것으로 추산됐다. 신입생을 한 명도 받지 못한 초등학교도 5년 사이 크게 늘었다.</p>
+        <p>교육부가 지난 1월 공개한 학생 수 <span class="t">추계</span> 자료를 보면, 2026년 전국 초등학교 1학년은 약 29만 8천 명으로 예상됐다. 2023년만 해도 40만 명이 넘던 1학년 학생은 2024년 약 35만 명, 2025년 약 32만 명으로 해마다 크게 줄었다. 3년 사이 25.8%가 줄어든 셈이다. 교육부는 이 숫자가 2031년에는 약 22만 명까지 줄어들 것으로 내다봤다.</p>
+        <p>신입생이 아예 없는 학교도 늘고 있다. 국회에 제출된 교육부 자료에 따르면 2026학년도에 신입생이 한 명도 배정되지 않은 초등학교는 210곳이었다. 2021학년도 116곳과 비교하면 5년 사이 81% 늘어난 것이다.</p>
+        <p>학생이 줄면서 문을 닫는 학교도 생기고 있다. 서울시교육청은 서울의 학생 수가 지난해 약 74만 명에서 2031년 약 53만 명으로 줄어들 것으로 보고, 문을 닫은 학교(폐교)의 땅과 건물을 어떻게 쓸지에 관한 5년 계획을 처음으로 내놓았다.</p>
+        <figure class="fig">
+          <p class="fig-title">초등학교 1학년 학생 수</p>
+          <p class="fig-unit">단위: 만 명 · 연한 막대는 교육부가 예상한 숫자(추계)</p>
+          <div class="legend"><span><i style="background:var(--s1)"></i>실제 학생 수</span><span><i style="background:var(--s1-proj)"></i>예상(추계)</span></div>
+          <div class="chart" data-chart="birth-grade1" role="img" aria-label="초등학교 1학년은 2023년 40.2만 명에서 2025년 32.4만 명으로 줄었고, 2026년 29.8만 명, 2031년 22.0만 명으로 줄어들 것으로 예상된다."></div>
+          <figcaption>자료: 한국교육개발원 교육통계(2023~2025년, 4월 1일 기준), 교육부 「초중고 학생 수 추계」(2026년부터)</figcaption>
+          <details class="table-view"><summary>표로 보기</summary>
+            <table><thead><tr><th>연도</th><th class="num">1학년 학생 수(명)</th><th>구분</th></tr></thead><tbody>
+              <tr><td>2023년</td><td class="num">401,752</td><td>실제</td></tr><tr><td>2024년</td><td class="num">353,713</td><td>실제</td></tr><tr><td>2025년</td><td class="num">324,040</td><td>실제</td></tr><tr><td>2026년</td><td class="num">298,178</td><td>추계</td></tr><tr><td>2027년</td><td class="num">277,674</td><td>추계</td></tr><tr><td>2028년</td><td class="num">262,309</td><td>추계</td></tr><tr><td>2029년</td><td class="num">247,591</td><td>추계</td></tr><tr><td>2030년</td><td class="num">232,268</td><td>추계</td></tr><tr><td>2031년</td><td class="num">220,481</td><td>추계</td></tr>
+            </tbody></table></details>
+        </figure>
+        <p class="basis">이 기사는 교육부 「2025년 초중고 학생 수 추계 보정 결과」를 다룬 보도와 국회 제출 자료 보도, 서울시교육청 계획 보도를 바탕으로 다시 썼어요. 원래 자료는 아래 출처 6~8번에 있어요.</p>
+      </article>
+
+      <article class="news" id="birth-a3">
+        <div class="masthead"><span class="paper-name">미래탐구신문</span><span><span class="sect">사회·인구</span>2026년 7월 28일 발표 자료</span></div>
+        <h3>노인 인구 처음으로 20% 넘어… 공식 ‘초고령사회’ 들어서</h3>
+        <p class="sub"><span>65세 이상 1,072만 명, 어린이의 두 배 넘어</span><span>태어난 아기보다 세상을 떠난 사람이 많은 ‘데드크로스’ 6년째</span></p>
+        <p class="lead">우리나라 인구 다섯 명 가운데 한 명 이상이 65세 이상 노인인 것으로 나타났다. 국가 공식 통계로 ‘초고령사회’에 들어선 것이다.</p>
+        <p>국가데이터처가 발표한 ‘2025년 인구주택총조사’ 결과에 따르면 2025년 11월 1일 기준 65세 이상 인구는 1,072만 3천 명으로 전체 인구의 20.7%를 차지했다. 국제연합(UN)은 65세 이상 인구가 20% 이상인 사회를 <span class="t">초고령사회</span>라고 부른다. 반면 0~14세 어린이는 522만 명(10.1%)으로 한 해 전보다 3.6% 줄었다.</p>
+        <p>어린이 100명당 노인이 몇 명인지 나타내는 ‘노령화지수’는 205.2로, 노인이 어린이보다 두 배 넘게 많아졌다. 전국 229개 시군구 가운데 224곳(97.8%)에서 노인이 어린이보다 많았다. 주로 일을 하는 나이인 15~64세 인구, 곧 <span class="t">생산연령인구</span>의 비율은 69.2%로, 2015년 73.4%를 가장 높은 점으로 계속 줄고 있다.</p>
+        <p>출생아가 늘었는데도 우리나라 사람의 수는 저절로 늘지 못하고 있다. 2025년에도 세상을 떠난 사람이 태어난 아기보다 많았기 때문이다. 이처럼 사망자 수가 출생아 수보다 많아지는 <span class="t">데드크로스</span>는 6년째 이어지고 있다. 전체 인구는 한 해 전보다 1만 2천 명 늘었지만, 이는 외국인이 6만 6천 명 늘어났기 때문이고 내국인은 5만 4천 명 줄었다.</p>
+        <figure class="fig">
+          <p class="fig-title">우리나라 인구를 100명으로 줄여 본다면?</p>
+          <p class="fig-unit">2025년 11월 1일 기준 · 한 칸이 1명</p>
+          <div class="chart" data-chart="birth-waffle" role="img" aria-label="100명 가운데 어린이(0~14세)는 10명, 일하는 나이(15~64세)는 69명, 노인(65세 이상)은 21명이다."></div>
+          <div class="legend"><span><i style="background:var(--s3)"></i>어린이(0~14세) 10명</span><span><i style="background:var(--s1)"></i>일하는 나이(15~64세) 69명</span><span><i style="background:var(--s2)"></i>노인(65세 이상) 21명</span></div>
+          <figcaption>자료: 국가데이터처 「2025년 인구주택총조사」. 비율(10.1%, 69.2%, 20.7%)을 반올림해 100명으로 나타냈어요.</figcaption>
+        </figure>
+        <p class="basis">이 기사는 국가데이터처 「2025년 인구주택총조사」와 「2025년 출생·사망통계」를 다룬 보도를 바탕으로 다시 썼어요. 원래 자료는 아래 출처 9~11번에 있어요.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="sec" id="birth-future">
+    <h2 class="sec-title"><span class="n">2</span>미래에는 어떤 문제가 생길까요?</h2>
+    <p class="sec-lead">통계 기관의 추계와 연구 자료를 바탕으로 미래를 전망한 글입니다.</p>
+    <article class="essay">
+      <h3>인구가 줄어드는 미래, 우리 사회는 어떻게 달라질까요?</h3>
+      <p class="para">미래를 정확히 알 수는 없지만, 지금의 자료를 바탕으로 앞으로 어떤 일이 생길지 미리 짐작해 볼 수는 있습니다. 국가데이터처(예전 이름은 통계청)는 태어나는 아기 수, 세상을 떠나는 사람 수, 나라 안팎으로 옮겨 오가는 사람 수를 바탕으로 앞으로 50년 동안의 인구를 계산해 발표합니다. 이를 ‘장래인구<span class="t">추계</span>’라고 합니다. 2023년 12월에 발표한 추계에 따르면, 2022년에 5,167만 명이던 우리나라 인구는 2072년에 3,622만 명까지 줄어들 것으로 보입니다. 50년 사이에 약 1,500만 명이 줄어드는 것으로, 1977년 무렵의 인구와 비슷한 수준입니다.</p>
+      <p class="para">인구가 줄어드는 것보다 더 큰 변화는 인구의 나이 구성이 바뀌는 것입니다. 2072년에는 65세 이상 노인이 전체 인구의 47.7%로, 두 사람 가운데 한 명꼴이 될 것으로 예상됩니다. 반대로 0~14세 어린이는 11.5%에서 6.6%로 줄어들고, 주로 일을 하는 나이인 15~64세 인구도 71.1%에서 45.8%로 줄어듭니다. 우리나라 사람들을 나이순으로 한 줄로 세웠을 때 한가운데 있는 사람의 나이인 <span class="t">중위연령</span>은 63.4세가 될 것으로 보입니다.</p>
+      <figure class="fig">
+        <p class="fig-title">나이에 따른 인구 구성의 변화</p>
+        <p class="fig-unit">단위: % · 2072년은 예상(중위 추계)</p>
+        <div class="legend"><span><i style="background:var(--s3)"></i>어린이(0~14세)</span><span><i style="background:var(--s1)"></i>일하는 나이(15~64세)</span><span><i style="background:var(--s2)"></i>노인(65세 이상)</span></div>
+        <div class="chart" data-chart="birth-stack" role="img" aria-label="2022년에는 어린이 11.5%, 일하는 나이 71.1%, 노인 17.4%였고, 2072년에는 어린이 6.6%, 일하는 나이 45.8%, 노인 47.7%가 될 것으로 예상된다."></div>
+        <figcaption>자료: 통계청 「장래인구추계: 2022~2072년」(2023년 12월)</figcaption>
+        <details class="table-view"><summary>표로 보기</summary>
+          <table><thead><tr><th>구분</th><th class="num">2022년</th><th class="num">2072년(예상)</th></tr></thead><tbody>
+            <tr><td>어린이(0~14세)</td><td class="num">11.5%</td><td class="num">6.6%</td></tr>
+            <tr><td>일하는 나이(15~64세)</td><td class="num">71.1%</td><td class="num">45.8%</td></tr>
+            <tr><td>노인(65세 이상)</td><td class="num">17.4%</td><td class="num">47.7%</td></tr>
+          </tbody></table></details>
+      </figure>
+      <p class="para">이런 변화는 여러 문제로 이어질 수 있습니다. 먼저 일할 사람이 부족해집니다. 공장과 농촌, 병원과 돌봄 시설처럼 사람의 손이 꼭 필요한 곳에서 일손을 구하기 어려워지고, 나라 경제의 힘도 약해질 수 있습니다. 또 일하는 사람이 줄면 세금과 연금 보험료를 내는 사람은 줄어드는데, 연금과 의료 서비스가 필요한 노인은 늘어납니다. 일하는 나이 인구 100명이 함께 돌봐야 하는 어린이와 노인의 수를 ‘<span class="t">총부양비</span>’라고 하는데, 이 숫자는 2022년 40.6명에서 2072년 118.5명으로 늘어날 것으로 보입니다. 지금은 일하는 사람 다섯 명이 두 명쯤을 돌보는 셈이라면, 50년 뒤에는 한 사람이 한 명 넘게 돌봐야 하는 셈입니다.</p>
+      <p class="para">지역과 학교의 모습도 달라집니다. 초등학교에 다니는 나이(6~11세)의 어린이는 2022년 약 270만 명에서 2040년 약 156만 명으로 줄어들 것으로 예상됩니다. 어린이가 줄면 학교뿐 아니라 소아청소년과, 놀이터처럼 어린이를 위한 시설도 함께 줄어들 수 있습니다. 젊은 사람들이 일자리를 찾아 대도시로 떠난 지역에서는 마을에 사람이 거의 남지 않는 ‘지역 소멸’이 걱정되기도 합니다. 나라를 지킬 군인, 아픈 사람과 노인을 돌볼 사람이 부족해질 수 있다는 걱정도 나옵니다.</p>
+      <p class="para">그런데 미래 예측은 바뀔 수 있습니다. 2023년의 추계는 2025년 합계출산율이 0.65명까지 떨어질 것으로 예상했지만, 실제 2025년 합계출산율은 0.80명으로 예상보다 높았습니다. 이처럼 미래는 이미 정해진 것이 아니라, 지금 사람들이 어떤 선택을 하느냐에 따라 달라질 수 있습니다. 다만 출산율이 조금 오르더라도 인구가 줄지 않으려면 필요한 2.1명에는 아직 크게 못 미칩니다. 그래서 인구가 줄고 나이 든 사람이 많아지는 흐름은 당분간 이어질 가능성이 큽니다. 줄어드는 인구 속에서도 모두가 행복하게 살 수 있는 사회를 만들려면 무엇을 준비해야 할지, 지금부터 함께 고민해야 합니다.</p>
+    </article>
+  </section>
+
+
+  <aside class="gloss" id="birth-gloss">
+    <h2>낱말 풀이</h2>
+    <dl>
+      <dt>출생아</dt><dd>새로 태어난 아기</dd>
+      <dt>합계출산율</dt><dd>여성 한 명이 평생 낳을 것으로 예상되는 평균 아기 수. 약 2.1명은 되어야 인구가 줄지 않고 유지돼요.</dd>
+      <dt>저출산</dt><dd>아기를 적게 낳아 태어나는 아기 수가 줄어드는 현상. ‘저출생’이라고도 해요.</dd>
+      <dt>OECD</dt><dd>경제협력개발기구. 우리나라를 포함해 38개 나라가 함께하는 국제기구</dd>
+      <dt>추계</dt><dd>지금까지의 자료를 바탕으로 앞으로의 수를 미리 계산해 짐작하는 것</dd>
+      <dt>초고령사회</dt><dd>65세 이상 인구가 전체 인구의 20% 이상인 사회</dd>
+      <dt>생산연령인구</dt><dd>주로 일을 하는 나이인 15~64세의 인구</dd>
+      <dt>데드크로스</dt><dd>한 해 동안 세상을 떠난 사람의 수가 태어난 아기 수보다 많아지는 현상</dd>
+      <dt>중위연령</dt><dd>전체 인구를 나이순으로 세웠을 때 한가운데 있는 사람의 나이</dd>
+      <dt>총부양비</dt><dd>일하는 나이 인구 100명이 함께 돌봐야 하는 어린이와 노인의 수</dd>
+    </dl>
+  </aside>
+
+  <section class="refs" id="birth-refs">
+    <h2>출처</h2>
+    <h3>기사 1 · 출생아와 합계출산율</h3>
+    <ol>
+      <li>KDI 경제교육·정보센터, 국가데이터처 「2025년 출생 통계」(2026. 8. 26.) 요약. <a href="https://eiec.kdi.re.kr/policy/materialView.do?num=285815">https://eiec.kdi.re.kr/policy/materialView.do?num=285815</a></li>
+      <li>뉴시스(2026. 2. 25.), 「합계출산율 4년 만에 ‘0.8명대’ 찍었다…출생아 증가 대부분 ‘첫째’」. <a href="https://www.newsis.com/view/NISX20260225_0003525439">https://www.newsis.com/view/NISX20260225_0003525439</a></li>
+      <li>트윅(2026. 8. 26.), 「지난해 출생아 2년 연속 증가…합계출산율 0.8명대 회복」. <a href="https://twig24.com/news/2026/08/26/20260826500109">https://twig24.com/news/2026/08/26/20260826500109</a></li>
+      <li>한국보건사회연구원, 『보건복지 이슈앤포커스』 제468호 「최근 출생아 수 반등의 인구학적 요인 분석 및 시사점」. <a href="https://www.kihasa.re.kr/api/kihasa/file/download?seq=33748">https://www.kihasa.re.kr/api/kihasa/file/download?seq=33748</a></li>
+      <li>BusinessWorld(2026. 2.), “South Korea’s birthrate, the world’s lowest, rises again”(혼인 건수 증가율). <a href="https://www.bworldonline.com/?p=732803">https://www.bworldonline.com/?p=732803</a></li>
+    </ol>
+    <h3>기사 2 · 초등학교 입학생</h3>
+    <ol start="6">
+      <li>SBS Biz(2026. 1. 13.), 「“폐교되는 거 아니죠?”…올 초등학교 입학생 30만명 붕괴」. <a href="https://biz.sbs.co.kr/amp/article/20000284389">https://biz.sbs.co.kr/amp/article/20000284389</a></li>
+      <li>한국교육신문, 2026학년도 입학예정자 0명 초등학교 현황 보도. <a href="https://hangyo.com/news/article.html?no=106989">https://hangyo.com/news/article.html?no=106989</a></li>
+      <li>한국경제(2026. 3. 18.), 서울교육청 「학교 이전적지·폐교 활용 5개년 전략계획」 보도. <a href="https://www.hankyung.com/article/202603180164i">https://www.hankyung.com/article/202603180164i</a></li>
+    </ol>
+    <h3>기사 3 · 초고령사회</h3>
+    <ol start="9">
+      <li>머니투데이(2026. 7. 28.), 「韓 초고령사회 진입, 65세 이상 20%↑…생산연령인구 70% 아래로」. <a href="https://www.mt.co.kr/economy/2026/07/28/2026072809595898409">https://www.mt.co.kr/economy/2026/07/28/2026072809595898409</a></li>
+      <li>아시아경제(2026. 2. 25.), 「에코붐 세대 결혼·출산 본격화」(데드크로스 6년째). <a href="https://view.asiae.co.kr/article/2026022509505496898">https://view.asiae.co.kr/article/2026022509505496898</a></li>
+      <li>뉴시스(2024. 12. 24.), 「‘고령사회’ 6년 만에 ‘초고령사회’ 진입」(UN 기준). <a href="https://www.newsis.com/view/NISX20241224_0003009282">https://www.newsis.com/view/NISX20241224_0003009282</a></li>
+    </ol>
+    <h3>설명글 · 미래의 인구</h3>
+    <ol start="12">
+      <li>대한민국 정책브리핑, 「장래인구추계: 2022~2072년」 브리핑. <a href="https://www.korea.kr/briefing/policyBriefingView.do?newsId=156605259">https://www.korea.kr/briefing/policyBriefingView.do?newsId=156605259</a></li>
+      <li>뉴시스(2023. 12. 14.), 「50년 뒤 생산인구 1658만명, 작년比 45.1% 불과…총부양비 119명」. <a href="https://www.newsis.com/view/NISX20231214_0002558157">https://www.newsis.com/view/NISX20231214_0002558157</a></li>
+      <li>서울신문(2023. 12. 15.), 「2025년 인구 ‘데드크로스’ 가속… 50년 뒤엔 둘 중 한 명은 고령층」(학령인구 전망). <a href="https://m.seoul.co.kr/news/2023/12/15/20231215001005">https://m.seoul.co.kr/news/2023/12/15/20231215001005</a></li>
+      <li>뉴시스(2024. 9. 23.), 세계와 한국의 인구 전망 보도(중위연령). <a href="https://www.newsis.com/view/NISX20240923_0002895508">https://www.newsis.com/view/NISX20240923_0002895508</a></li>
+    </ol>
+  </section>
+</main>
+
+<!-- ===================== 환경오염 ===================== -->
+<main class="wrap v-env" data-view="environment" hidden>
+  <div class="topbar">
+    <a class="back" href="#home">← 처음으로</a>
+    <nav class="switch" aria-label="다른 주제">
+      <a href="#birth">저출산</a>
+      <a href="#environment" aria-current="page">환경오염</a>
+      <a href="#ai-crime">AI 기술 범죄 악용</a>
+    </nav>
+  </div>
+  <header class="page-head">
+    <p class="eyebrow">미래 사회 문제 탐구 ②</p>
+    <h1>환경오염</h1>
+    <p class="q">더 뜨거워지는 지구, 늘어나는 플라스틱. 미래에는 어떤 일이 생길까요?</p>
+  </header>
+  <nav class="toc" aria-label="이 화면의 자료 목록">
+    <p class="toc-h">이 화면의 자료</p>
+    <ol>
+      <li><button type="button" data-jump="env-a1"><span class="kind">기사 1</span><span class="tt">3년 연속 ‘가장 더운 여름’… 폭염·열대야 50년 전보다 2~3배</span></button></li>
+      <li><button type="button" data-jump="env-a2"><span class="kind">기사 2</span><span class="tt">플라스틱 쓰레기 줄이자는 세계의 약속, 또 결론 못 내</span></button></li>
+      <li><button type="button" data-jump="env-a3"><span class="kind">기사 3</span><span class="tt">교실 속 플라스틱 쓰레기, 열에 아홉은 ‘먹고 마신 것’</span></button></li>
+      <li><button type="button" data-jump="env-future"><span class="kind kind-f">전망</span><span class="tt">더 뜨거워지는 지구, 더 많아지는 플라스틱</span></button></li>
+    </ol>
+    <p class="toc-more"><button type="button" data-jump="env-gloss">낱말 풀이</button><button type="button" data-jump="env-refs">출처 목록</button></p>
+  </nav>
+
+  <section class="sec" id="env-news">
+    <h2 class="sec-title"><span class="n">1</span>지금 어떤 일이 일어나고 있을까요?</h2>
+    <p class="sec-lead">최근 보도와 기상청·연구 기관 자료를 바탕으로 정리한 기사 3편입니다.</p>
+
+    <div class="articles">
+      <article class="news" id="env-a1">
+        <div class="masthead"><span class="paper-name">미래탐구신문</span><span><span class="sect">환경·기후</span>2026년 9월 3일 발표 자료</span></div>
+        <h3>3년 연속 ‘가장 더운 여름’… 폭염·열대야 50년 전보다 2~3배</h3>
+        <p class="sub"><span>올여름 전국 평균기온 25.4도, 관측 이래 세 번째</span><span>지난해 서울 열대야 46일, 1908년 관측 시작 뒤 가장 많아</span></p>
+        <p class="lead">최근 3년의 여름이 기상 관측 이래 가장 더웠던 여름 1~3위를 모두 차지했다. 무더위는 예전보다 일찍 시작해 늦게까지 이어지고 있다.</p>
+        <p>기상청이 발표한 ‘2026년 여름철 기후 특성’에 따르면 올해 6~8월 전국 평균기온은 25.4도로 <span class="t">평년</span>보다 1.7도 높았다. 전국에 관측망을 넓게 갖춘 1973년 이후 2025년(25.7도), 2024년(25.6도)에 이어 세 번째로 높은 기록이다. 우리나라 주변 바다의 여름철 평균 <span class="t">해수면 온도</span>도 24.3도로 최근 10년 가운데 가장 높았다.</p>
+        <p>더운 날 자체도 크게 늘었다. 기상청이 1973년부터 2025년까지의 기록을 분석해 보니, 최근 10년(2016~2025년) 동안 한 해 평균 <span class="t">폭염</span>일수는 18.3일로 50여 년 전 10년(1973~1982년)의 8.3일보다 2.2배 많았다. 밤에도 기온이 25도 밑으로 내려가지 않는 <span class="t">열대야</span>는 4.1일에서 12.2일로 약 3배가 되었다. 폭염이 시작되는 날은 50년 전보다 열흘 이상 빨라지고, 끝나는 날은 열흘가량 늦어졌다. 2025년 여름 서울에서는 열대야가 46일이나 나타나 1908년 관측을 시작한 이래 가장 많았다.</p>
+        <p>과학자들은 석탄, 석유 같은 화석 연료를 태울 때 나오는 이산화탄소 등 <span class="t">온실가스</span>가 지구를 점점 덥게 만드는 주된 원인이라고 설명한다.</p>
+        <figure class="fig">
+          <p class="fig-title">한 해 평균 폭염일수와 열대야일수, 50년 전과 비교</p>
+          <p class="fig-unit">단위: 일 · 전국 평균</p>
+          <div class="legend"><span><i style="background:var(--s1)"></i>1973~1982년(10년 평균)</span><span><i style="background:var(--s2)"></i>2016~2025년(10년 평균)</span></div>
+          <div class="chart" data-chart="env-heat" role="img" aria-label="폭염일수는 1973~1982년 평균 8.3일에서 2016~2025년 평균 18.3일로, 열대야일수는 4.1일에서 12.2일로 늘었다."></div>
+          <figcaption>자료: 기상청 「우리나라 폭염·열대야 발생 특성 변화」(2026년 7월)</figcaption>
+          <details class="table-view"><summary>표로 보기</summary>
+            <table><thead><tr><th>구분</th><th class="num">1973~1982년</th><th class="num">2016~2025년</th></tr></thead><tbody>
+              <tr><td>폭염일수</td><td class="num">8.3일</td><td class="num">18.3일</td></tr>
+              <tr><td>열대야일수</td><td class="num">4.1일</td><td class="num">12.2일</td></tr>
+            </tbody></table></details>
+        </figure>
+        <p class="basis">이 기사는 기상청의 「2026년 여름철 기후 특성」과 「우리나라 폭염·열대야 발생 특성 변화」 분석을 다룬 보도를 바탕으로 다시 썼어요. 원래 자료는 아래 출처 1~5번에 있어요.</p>
+      </article>
+
+      <article class="news" id="env-a2">
+        <div class="masthead"><span class="paper-name">미래탐구신문</span><span><span class="sect">환경·국제</span>2025년 8월 15일 회의 결과</span></div>
+        <h3>플라스틱 쓰레기 줄이자는 세계의 약속, 또 결론 못 내</h3>
+        <p class="sub"><span>185개 나라 모였지만 ‘생산 줄이기’를 두고 의견 갈려</span><span>다음 공식 협상은 2027년 3월 예정</span></p>
+        <p class="lead">플라스틱 오염을 막기 위해 모든 나라가 지켜야 할 국제 약속, 곧 <span class="t">협약</span>을 만들려던 회의가 또 합의 없이 끝났다.</p>
+        <p>2025년 8월 스위스 제네바에서 열린 플라스틱 협약 협상 회의에는 185개 나라가 참여했다. 각 나라 대표들은 예정된 마지막 날을 하루 넘겨 가며 논의했지만 끝내 협약 문서를 완성하지 못했다. 2024년 11월 우리나라 부산에서 열린 회의에 이어 두 번 연속으로 결론을 내지 못한 것이다.</p>
+        <p>가장 크게 부딪친 문제는 플라스틱을 처음부터 덜 만들도록 ‘생산량 줄이기’를 협약에 넣을지였다. 유럽연합(EU)과 영국 등은 플라스틱 생산을 줄이고 해로운 화학 물질도 차례로 없애야 한다고 주장했다. 반면 사우디아라비아 같은 <span class="t">산유국</span>과 미국은 경제에 부담이 된다며 반대했다. 생산 감축에 반대하는 나라들은 재활용과 재사용으로 해결하자고 했지만, 지금 플라스틱 재활용률이 10%에도 못 미친다는 점에서 이것만으로는 부족하다는 비판이 나온다.</p>
+        <p>협상 위원회는 2026년 2월 새 의장을 뽑고 다시 준비에 들어갔다. 각 나라 대표들은 비공개 회의를 이어 가고 있으며, 다음 공식 협상은 2027년 3월로 잡혀 있다.</p>
+        <figure class="fig">
+          <p class="fig-title">플라스틱 협약, 지금까지 어떻게 되었을까?</p>
+          <ol class="timeline">
+            <li><span class="when">2022년 3월</span><span class="dot" aria-hidden="true"></span><span class="what">유엔환경총회에서 법으로 지켜야 하는 플라스틱 협약을 만들기로 결정</span></li>
+            <li class="fail"><span class="when">2024년 11월</span><span class="dot" aria-hidden="true"></span><span class="what">부산 회의<small>결론을 내지 못하고 회의를 이어서 열기로 함</small></span></li>
+            <li class="fail"><span class="when">2025년 8월</span><span class="dot" aria-hidden="true"></span><span class="what">제네바 회의(185개국)<small>생산 감축을 두고 의견이 갈려 또 결론을 내지 못함</small></span></li>
+            <li><span class="when">2026년 2월</span><span class="dot" aria-hidden="true"></span><span class="what">새 의장 선출, 비공개 회의 이어 감</span></li>
+            <li class="next"><span class="when">2027년 3월</span><span class="dot" aria-hidden="true"></span><span class="what">다음 공식 협상 예정</span></li>
+          </ol>
+          <figcaption>주황색 점은 결론을 내지 못한 회의예요. 자료: 유엔환경계획(UNEP), 언론 보도</figcaption>
+        </figure>
+        <p class="basis">이 기사는 제네바 플라스틱 협약 회의 결과와 이후 일정을 다룬 보도, 유엔환경계획(UNEP) 자료를 바탕으로 다시 썼어요. 원래 자료는 아래 출처 6~10번에 있어요.</p>
+      </article>
+
+      <article class="news" id="env-a3">
+        <div class="masthead"><span class="paper-name">미래탐구신문</span><span><span class="sect">환경·생활</span>2025년 9월 30일 발표 자료</span></div>
+        <h3>교실 속 플라스틱 쓰레기, 열에 아홉은 ‘먹고 마신 것’</h3>
+        <p class="sub"><span>초·중·고 학생 137명이 직접 조사</span><span>생수·음료 포장재가 가장 많아</span></p>
+        <p class="lead">학생들이 학교생활에서 쓰고 버린 플라스틱을 직접 조사했더니, 대부분이 과자와 음료 같은 식품을 담았던 포장재였다.</p>
+        <p>환경 단체 그린피스는 전국 7개 지역 초·중·고등학교 9곳의 학생 137명과 함께 교실 플라스틱 조사를 하고 그 결과를 2025년 9월 발표했다. 학생들은 자신이 쓰고 버린 플라스틱을 살펴보며 하나하나 기록했다. 그 결과 음료를 포함한 식품 포장재가 전체 플라스틱 쓰레기의 87%를 차지했다. 그 가운데 생수와 음료를 담았던 일회용 플라스틱이 41.9%로 가장 많았다.</p>
+        <p>그린피스는 생수·음료 회사들이 일회용 플라스틱을 얼마나 쓰는지 해마다 공개하고, 용기를 다시 쓰거나 내용물만 다시 채워 쓰는(리필) 방식을 늘려야 한다고 요구했다.</p>
+        <p>어린이와 청소년도 환경 문제를 심각하게 받아들이고 있다. 환경재단 어린이환경센터가 2025년 5월 전국 어린이·청소년 1,074명에게 가장 심각한 환경 문제를 여러 개 고르게 했더니, 폭염·가뭄·집중호우 같은 ‘이상 기후’(54.1%)가 가장 많았고 ‘플라스틱과 쓰레기 문제’(49.4%), ‘미세먼지’(42.5%)가 뒤를 이었다.</p>
+        <figure class="fig">
+          <p class="fig-title">어린이·청소년이 꼽은 가장 심각한 환경 문제 (상위 3개)</p>
+          <p class="fig-unit">단위: % · 여러 개를 고를 수 있는 질문 · 응답자 1,074명</p>
+          <div class="chart" data-chart="env-survey"></div>
+          <figcaption>자료: 환경재단 어린이환경센터 설문조사(2025년 5월 1~18일)</figcaption>
+        </figure>
+        <p class="basis">이 기사는 그린피스 보도자료 「2025 플콕조사」와 환경재단 어린이환경센터 설문 결과 보도를 바탕으로 다시 썼어요. 원래 자료는 아래 출처 11~12번에 있어요.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="sec" id="env-future">
+    <h2 class="sec-title"><span class="n">2</span>미래에는 어떤 문제가 생길까요?</h2>
+    <p class="sec-lead">기상청과 OECD의 예측 자료를 바탕으로 미래를 전망한 글입니다.</p>
+    <article class="essay">
+      <h3>더 뜨거워지는 지구, 더 많아지는 플라스틱</h3>
+      <p class="para">환경 문제는 오늘의 원인이 오랜 시간이 흐른 뒤에 결과로 나타나는 경우가 많습니다. 그래서 과학자들은 슈퍼컴퓨터로 지구의 공기와 바다의 움직임을 계산하여 미래의 기후를 예측합니다. 이때 사람들이 앞으로 온실가스를 얼마나 내보낼지에 따라 여러 가지 <span class="t">시나리오</span>를 세웁니다. 온실가스를 지금처럼 많이 내보내는 경우를 ‘고탄소 시나리오’, 크게 줄이는 경우를 ‘저탄소 시나리오’라고 합니다.</p>
+      <p class="para">기상청이 이 시나리오에 따라 우리나라의 미래 기후를 계산한 결과, 21세기 후반(2081~2100년)에 전국 17개 시도의 한 해 평균 기온은 시나리오와 지역에 따라 지금보다 2.2~6.7도 오를 것으로 나타났습니다. 고탄소 시나리오에서는 서울과 경기도가 6.7도로 가장 크게 오릅니다. 고탄소 시나리오에서 폭염일수는 모든 지역에서 늘어, 지역에 따라 한 해에 11.6일에서 96.7일까지 더 많아질 수 있습니다. 온실가스를 줄이지 않으면 남부 지방에서는 겨울이 사라지고, 강원 영서를 뺀 전국 대부분 지역이 <span class="t">아열대 기후</span>로 바뀔 수 있다는 전망도 나왔습니다.</p>
+      <p class="para">기온이 오르면 우리의 생활도 크게 달라집니다. 더위 때문에 몸에 이상이 생기는 온열질환의 위험이 커지고, 밖에서 일하거나 운동하기 어려운 날이 늘어납니다. 기상청 분석에 따르면 더위와 습도를 함께 따진 여름철 평균 온열지수는 지금 26.9도인데, 고탄소 시나리오에서는 21세기 후반에 33.2도까지 오를 수 있습니다. 바다도 뜨거워져 우리나라 주변 바다의 해수면 온도가 4.5도 오를 수 있다는 전망도 있습니다. 바닷물이 뜨거워지면 그 속에 사는 생물들이 살 곳을 잃거나 다른 곳으로 옮겨 가게 됩니다. 폭염과 가뭄, 집중호우 같은 극단적인 날씨도 더 자주 나타날 수 있습니다.</p>
+      <p class="para">플라스틱 쓰레기 문제도 점점 커질 것으로 보입니다. 경제협력개발기구(OECD)는 세계가 지금처럼 플라스틱을 쓴다면, 2019년 약 3억 5,300만 톤이던 플라스틱 쓰레기가 2060년에는 약 10억 1,400만 톤으로 세 배 가까이 늘어날 것이라고 내다보았습니다. 이 가운데 재활용되는 것은 5분의 1에도 못 미치고, 절반쯤은 땅에 묻힐 것으로 예상됩니다. 쓰레기의 3분의 2 정도는 포장재처럼 잠깐 쓰고 버리는 물건에서 나옵니다. 강과 호수, 바다에 쌓이는 플라스틱의 양도 세 배 넘게 늘어날 수 있습니다.</p>
+      <figure class="fig">
+        <p class="fig-title">세계 플라스틱 쓰레기의 양</p>
+        <p class="fig-unit">단위: 억 톤 · 2060년은 지금처럼 쓸 경우의 예상</p>
+        <div class="chart" data-chart="env-plastic" role="img" aria-label="세계 플라스틱 쓰레기는 2019년 3.53억 톤에서 2060년 10.14억 톤으로 늘어날 것으로 예상된다."></div>
+        <figcaption>자료: OECD 「Global Plastics Outlook: Policy Scenarios to 2060」(2022년)</figcaption>
+      </figure>
+      <p class="para">버려진 플라스틱은 쉽게 썩지 않고, 햇빛과 파도에 부서져 5mm보다 작은 <span class="t">미세플라스틱</span>이 됩니다. 미세플라스틱은 물고기와 조개 같은 바다 생물의 몸에 쌓이고, 먹이 사슬을 따라 결국 사람의 밥상으로 돌아올 수 있습니다. 또 플라스틱은 석유로 만들기 때문에, 만들고 태우는 과정에서 온실가스가 나옵니다. 플라스틱 문제와 기후 문제는 서로 이어져 있는 셈입니다.</p>
+      <p class="para">하지만 이 전망들도 정해진 미래는 아닙니다. 기상청 분석에서 온실가스를 크게 줄이는 저탄소 시나리오를 따르면, 기온과 폭염일수가 늘어나는 폭이 훨씬 작아집니다. OECD도 세계 여러 나라가 함께 강한 정책을 펼치면 플라스틱 쓰레기를 3분의 1가량 줄이고, 플라스틱이 자연으로 새어 나가는 것을 거의 막을 수 있다고 보았습니다. 어떤 미래를 맞이할지는 지금 우리가 무엇을 선택하느냐에 달려 있습니다.</p>
+    </article>
+  </section>
+
+
+  <aside class="gloss" id="env-gloss">
+    <h2>낱말 풀이</h2>
+    <dl>
+      <dt>평년</dt><dd>최근 30년(1991~2020년) 동안의 평균값. 올해가 보통 해보다 얼마나 더웠는지 비교할 때 써요.</dd>
+      <dt>해수면 온도</dt><dd>바다 표면에 있는 물의 온도</dd>
+      <dt>폭염</dt><dd>하루 가장 높은 기온이 33도 이상인 매우 심한 더위</dd>
+      <dt>열대야</dt><dd>밤사이 가장 낮은 기온이 25도 이상인 무더운 밤</dd>
+      <dt>온실가스</dt><dd>지구 밖으로 빠져나가야 할 열을 붙잡아 지구를 덥게 만드는 기체. 이산화탄소가 대표적이에요.</dd>
+      <dt>협약</dt><dd>나라와 나라 사이에 문서로 맺는 약속</dd>
+      <dt>산유국</dt><dd>석유가 많이 나는 나라</dd>
+      <dt>시나리오</dt><dd>미래에 일어날 수 있는 여러 상황을 가정해 세운 예상 줄거리</dd>
+      <dt>아열대 기후</dt><dd>열대와 온대의 중간 기후로, 여름이 길고 무더우며 겨울이 따뜻해요.</dd>
+      <dt>미세플라스틱</dt><dd>크기가 5mm보다 작은 플라스틱 조각</dd>
+    </dl>
+  </aside>
+
+  <section class="refs" id="env-refs">
+    <h2>출처</h2>
+    <h3>기사 1 · 폭염과 열대야</h3>
+    <ol>
+      <li>파이낸셜뉴스(2026. 9. 3.), 기상청 「2026년 여름철 기후특성」 보도. <a href="https://www.fnnews.com/news/202609031702500027">https://www.fnnews.com/news/202609031702500027</a></li>
+      <li>아이뉴스24(2026. 9.), 「올해 여름 잘 견디셨습니까 [지금은 기후위기]」. <a href="https://www.inews24.com/view/2001576">https://www.inews24.com/view/2001576</a></li>
+      <li>한국경제(2026. 7. 24.), 기상청 폭염·열대야 53년 분석 보도. <a href="https://www.hankyung.com/article/2026072451177">https://www.hankyung.com/article/2026072451177</a></li>
+      <li>경향신문(2026. 7. 24.), 폭염 시작·종료 시기 변화 보도. <a href="https://www.khan.co.kr/article/202607241113011/">https://www.khan.co.kr/article/202607241113011/</a></li>
+      <li>경향신문(2025. 9. 4.), 「평균기온 역대 1위·극한호우·가뭄···가장 뜨겁고 요란했던 2025년 여름」. <a href="https://www.khan.co.kr/article/202509041330001">https://www.khan.co.kr/article/202509041330001</a></li>
+    </ol>
+    <h3>기사 2 · 플라스틱 협약</h3>
+    <ol start="6">
+      <li>YTN(2025. 8. 15.), 플라스틱 협약 제네바 회의 결렬 보도. <a href="https://www.ytn.co.kr/_ln/0104_202508151640358930">https://www.ytn.co.kr/_ln/0104_202508151640358930</a></li>
+      <li>더나은미래(2025. 8.), 「플라스틱 협상 또 결렬…‘생산 감축·화학물질 규제’ 최대 난제」. <a href="https://futurechosun.com/archives/128879">https://futurechosun.com/archives/128879</a></li>
+      <li>뉴닉(2025. 8.), 「플라스틱 협약 논의 재개한 유엔, 지난해 부산 실패 딛고 이번엔 성공?」. <a href="https://newneek.co/@newneek/article/34632">https://newneek.co/@newneek/article/34632</a></li>
+      <li>유엔환경계획(UNEP), 플라스틱 오염 정부간협상위원회(INC) 안내. <a href="https://www.unep.org/es/about-un-environment/inc-plastic-pollution">https://www.unep.org/es/about-un-environment/inc-plastic-pollution</a></li>
+      <li>비건뉴스(2026. 7.), 「국제 플라스틱 협약 논의 재개, 생산 감축 쟁점 남아」. <a href="https://www.vegannews.co.kr/news/article.html?no=383711">https://www.vegannews.co.kr/news/article.html?no=383711</a></li>
+    </ol>
+    <h3>기사 3 · 교실 속 플라스틱</h3>
+    <ol start="11">
+      <li>그린피스 서울사무소(2025. 9. 30.), 「어린이∙청소년 삶에도 침투한 플라스틱...그린피스, 기업 책임 요구」. <a href="https://www.greenpeace.org/korea/press/35464/presslease-plkok2025/">https://www.greenpeace.org/korea/press/35464/presslease-plkok2025/</a></li>
+      <li>더나은미래(2025. 5.), 「“플라스틱 줄여주세요” 어린이·청소년 1074명, 대선 후보에게 바란다」. <a href="https://futurechosun.com/?p=124193">https://futurechosun.com/?p=124193</a></li>
+    </ol>
+    <h3>설명글 · 미래의 기후와 플라스틱</h3>
+    <ol start="13">
+      <li>기상청 보도자료(2022. 12. 29.), 「온실가스 감축 없으면, 21세기 말 우리나라 남부지방 겨울이 사라진다」. <a href="https://www.kma.go.kr/kma/flexer/html/press/2022/12/28/ATC202212280914493_2126e065-9ff5-4605-afa0-5ca35e16a08d.hwp.files/Sections1.html">기상청 누리집 보도자료</a></li>
+      <li>머니투데이(2026. 6. 16.), 「한반도 덮친 기후변화…2100년엔 전국 대부분이 ‘아열대 기후’ 전망」. <a href="https://www.mt.co.kr/article/2026061610311279568">https://www.mt.co.kr/article/2026061610311279568</a></li>
+      <li>아이뉴스24, 「지금도 ‘헉헉’…미래 ‘열스트레스’ 어디까지 [지금은 기후위기]」. <a href="https://www.inews24.com/view/1992481">https://www.inews24.com/view/1992481</a></li>
+      <li>기상청 보도자료(2022. 8. 30.), 고탄소 시나리오에서 21세기 후반 한반도 해수면 온도 4.5℃ 상승 전망. <a href="https://www.kma.go.kr/kma/flexer/html/press/2022/08/30/ATC202208301803171_01b17a45-b72b-444a-8251-f3cb3151d174.hwp.files/Sections1.html">기상청 누리집 보도자료</a></li>
+      <li>IEMA(2022. 6.), “Global plastic waste to almost treble by 2060, forecasts suggest”(OECD 보고서 소개). <a href="https://www.iema.net/articles/global-plastic-waste-to-almost-treble-by-2060-forecasts-suggest">https://www.iema.net/articles/global-plastic-waste-to-almost-treble-by-2060-forecasts-suggest</a></li>
+      <li>letsrecycle.com(2022. 6.), “Plastic production to triple by 2060, says OECD”. <a href="https://www.letsrecycle.com/news/plastic-production-to-triple-by-2060-says-oecd">https://www.letsrecycle.com/news/plastic-production-to-triple-by-2060-says-oecd</a></li>
+      <li>Resource(2022. 6. 6.), “Global production of plastic waste set to triple by 2060, says OECD report”. <a href="https://resourcemedia.eco/article/global-production-plastic-waste-set-triple-2060-says-oecd-report">https://resourcemedia.eco/article/global-production-plastic-waste-set-triple-2060-says-oecd-report</a></li>
+      <li>경북매일(2023. 3. 27.), 저탄소·고탄소 시나리오 비교 보도. <a href="https://www.kbmaeil.com/article/202303270358212">https://www.kbmaeil.com/article/202303270358212</a></li>
+    </ol>
+  </section>
+</main>
+
+<!-- ===================== AI 기술 범죄 악용 ===================== -->
+<main class="wrap v-ai" data-view="ai-crime" hidden>
+  <div class="topbar">
+    <a class="back" href="#home">← 처음으로</a>
+    <nav class="switch" aria-label="다른 주제">
+      <a href="#birth">저출산</a>
+      <a href="#environment">환경오염</a>
+      <a href="#ai-crime" aria-current="page">AI 기술 범죄 악용</a>
+    </nav>
+  </div>
+  <header class="page-head">
+    <p class="eyebrow">미래 사회 문제 탐구 ③</p>
+    <h1>AI 기술 범죄 악용</h1>
+    <p class="q">인공지능이 범죄에 쓰이면 진짜와 가짜를 어떻게 구별할 수 있을까요?</p>
+  </header>
+  <nav class="toc" aria-label="이 화면의 자료 목록">
+    <p class="toc-h">이 화면의 자료</p>
+    <ol>
+      <li><button type="button" data-jump="ai-a1"><span class="kind">기사 1</span><span class="tt">“궁금해서 해 봤어요”는 안 통한다… 어려지는 AI 합성 범죄</span></button></li>
+      <li><button type="button" data-jump="ai-a2"><span class="kind">기사 2</span><span class="tt">“엄마, 나 큰일 났어”… 그 목소리, AI가 만든 가짜일 수도</span></button></li>
+      <li><button type="button" data-jump="ai-a3"><span class="kind">기사 3</span><span class="tt">AI가 만든 사진·영상에는 ‘표시’를… ‘AI 기본법’ 시행</span></button></li>
+      <li><button type="button" data-jump="ai-future"><span class="kind kind-f">전망</span><span class="tt">진짜와 가짜를 구별하기 어려운 미래</span></button></li>
+    </ol>
+    <p class="toc-more"><button type="button" data-jump="ai-gloss">낱말 풀이</button><button type="button" data-jump="ai-refs">출처 목록</button></p>
+  </nav>
+
+  <section class="sec" id="ai-news">
+    <h2 class="sec-title"><span class="n">1</span>지금 어떤 일이 일어나고 있을까요?</h2>
+    <p class="sec-lead">최근 보도와 정부 조사 자료를 바탕으로 정리한 기사 3편입니다.</p>
+
+    <div class="articles">
+      <article class="news" id="ai-a1">
+        <div class="masthead"><span class="paper-name">미래탐구신문</span><span><span class="sect">사회·디지털</span>2026년 7월 보도 자료</span></div>
+        <h3>“궁금해서 해 봤어요”는 안 통한다… 어려지는 AI 합성 범죄</h3>
+        <p class="sub"><span>딥페이크 범죄로 붙잡힌 10명 중 6명은 10대</span><span>초등학생 3.2% “AI로 사이버폭력을 한 적 있다”</span></p>
+        <p class="lead">인공지능(AI)으로 다른 사람의 얼굴이나 몸을 합성해 퍼뜨리는 ‘딥페이크’ 범죄를 저지르는 사람의 나이가 점점 어려지고 있다.</p>
+        <p>경찰청에 따르면 2024년 11월부터 2025년 10월까지 <span class="t">딥페이크</span> 영상 성범죄로 붙잡힌 <span class="t">피의자</span> 1,449명 가운데 895명(61.8%)이 10대였다. 붙잡힌 청소년 가운데 상당수는 친구에게 방법을 배웠다거나, 진짜처럼 만들어지는지 호기심에 장난삼아 해 봤다고 말한 것으로 조사됐다.</p>
+        <p>초등학생도 예외가 아니다. 방송미디어통신위원회와 한국지능정보사회진흥원(NIA)은 해마다 하는 ‘사이버폭력 실태조사’에 처음으로 AI를 이용한 사이버폭력에 관한 질문을 넣었다. 초등학교 4학년부터 고등학교 3학년까지 9,296명이 답한 이 조사에서, AI로 글이나 사진, 영상을 <span class="t">합성</span>해 퍼뜨린 적이 있다고 답한 비율은 초등학생이 3.2%로 중학생(1.3%)과 고등학생(2.3%)보다 높았다.</p>
+        <p>전문가들은 이제 프로그래밍을 전혀 몰라도 사진만 넣으면 합성물을 만들 수 있게 되었다고 경고한다. 친구의 얼굴을 허락 없이 합성해 퍼뜨리는 일은 장난으로 했더라도 다른 사람에게 큰 상처를 주는 폭력이며, 나이가 어려도 학교폭력이나 법에 따른 처벌 대상이 될 수 있다. 이 때문에 초등학교 때부터 AI 윤리 교육을 강화해야 한다는 목소리가 커지고 있다.</p>
+        <figure class="fig">
+          <p class="fig-title">“AI로 글·사진·영상을 합성해 퍼뜨린 적이 있다”고 답한 학생 비율</p>
+          <p class="fig-unit">단위: % · 조사 기간 2024년 9월~2025년 8월</p>
+          <div class="chart" data-chart="ai-cyber"></div>
+          <figcaption>자료: 방송미디어통신위원회·한국지능정보사회진흥원 「2025년 사이버폭력 실태조사」</figcaption>
+        </figure>
+        <p class="basis">이 기사는 경찰청 집중 단속 결과와 「2025년 사이버폭력 실태조사」를 다룬 보도를 바탕으로 다시 썼어요. 원래 자료는 아래 출처 1~3번에 있어요.</p>
+      </article>
+
+      <article class="news" id="ai-a2">
+        <div class="masthead"><span class="paper-name">미래탐구신문</span><span><span class="sect">생활 안전</span>2026년 9월 보도 자료</span></div>
+        <h3>“엄마, 나 큰일 났어”… 그 목소리, AI가 만든 가짜일 수도</h3>
+        <p class="sub"><span>짧은 목소리로 가족을 흉내 내는 ‘딥보이스’ 사기</span><span>지난해 보이스피싱 피해 1조 2천억 원, 역대 가장 많아</span></p>
+        <p class="lead">인공지능으로 가족의 목소리를 흉내 내 돈을 빼앗으려는 보이스피싱이 늘고 있다. 통신 회사들은 AI로 가짜 목소리를 찾아내는 기술로 맞서고 있다.</p>
+        <p>정부에 따르면 지난해(2025년) <span class="t">보이스피싱</span> 피해액은 약 1조 2천억 원으로 역대 가장 많았다. 최근에는 AI로 자녀의 목소리를 꾸며 내 “납치됐다”며 부모를 겁준 뒤 돈을 보내라고 하는 수법까지 나타났다. 모르는 번호로 걸려 온 전화에 “여보세요”라고 답한 몇 초 분량의 목소리만으로도 AI가 그 사람의 목소리와 말투를 흉내 낼 수 있다는 분석도 있다. 이렇게 만든 가짜 목소리를 <span class="t">딥보이스</span>라고 한다.</p>
+        <p>이 때문에 금융위원회와 금융감독원은 올해 2월 발표한 ‘보이스피싱 피해 예방 10계명’에 가족의 목소리도 AI로 조작됐을 수 있다고 의심하라는 내용을 넣었다.</p>
+        <p>통신 회사들은 ‘AI로 AI를 잡는’ 기술을 내놓고 있다. AI가 만든 목소리에는 사람 귀에는 들리지 않는 소리의 흔적이 남는데, 탐지 AI가 이 흔적을 찾아 합성된 목소리인지 알려 주는 방식이다. 하지만 전문가들은 범죄 기술이 발전하면 탐지 기술도 계속 따라 발전해야 하는 ‘창과 방패’의 싸움이 이어질 것이라고 말한다.</p>
+        <p>전문가들은 돈을 보내 달라는 급한 전화를 받으면 일단 끊고 가족에게 직접 다시 걸어 확인하고, 가족끼리만 아는 확인용 질문을 미리 정해 두라고 조언한다.</p>
+        <figure class="fig">
+          <p class="fig-title">딥보이스 보이스피싱은 이렇게 이루어져요</p>
+          <ol class="flow">
+            <li><b>목소리 모으기</b>전화나 누리 소통망(SNS) 영상에서 몇 초 분량의 목소리를 얻어요.</li>
+            <li><b>목소리 흉내 내기</b>AI가 그 사람의 목소리와 말투를 흉내 낸 가짜 목소리를 만들어요.</li>
+            <li><b>가족인 척 전화하기</b>급한 일이 생긴 것처럼 꾸며 겁을 주고 돈을 보내라고 해요.</li>
+          </ol>
+          <figcaption>자료: 언론 보도를 바탕으로 정리</figcaption>
+        </figure>
+        <p class="basis">이 기사는 AI 보이스피싱과 통신사 탐지 기술을 다룬 보도를 바탕으로 다시 썼어요. 원래 자료는 아래 출처 4~7번에 있어요.</p>
+      </article>
+
+      <article class="news" id="ai-a3">
+        <div class="masthead"><span class="paper-name">미래탐구신문</span><span><span class="sect">과학·법</span>2026년 1월 22일 시행</span></div>
+        <h3>AI가 만든 사진·영상에는 ‘표시’를… ‘AI 기본법’ 시행</h3>
+        <p class="sub"><span>딥페이크는 누구나 알아볼 수 있게 표시해야</span><span>이용자가 표시를 지우면 막기 어렵다는 지적도</span></p>
+        <p class="lead">인공지능(AI)을 다루는 기본 규칙을 담은 ‘AI 기본법’이 올해 1월 22일부터 시행됐다. AI로 만든 결과물에는 AI가 만들었다는 사실을 표시하도록 한 것이 핵심 내용 가운데 하나다.</p>
+        <p>이 법의 정식 이름은 ‘인공지능 발전과 신뢰 기반 조성 등에 관한 기본법’이다. 2024년 12월 국회를 통과한 뒤 1년 동안 준비 기간을 거쳤다. AI 산업은 키우면서도, 사람에게 해가 될 수 있는 부분에는 최소한의 안전장치를 두자는 것이 법을 만든 취지다.</p>
+        <p>법에 따라 AI 서비스를 제공하는 회사(사업자)는 AI로 만든 글·그림·영상 등에 AI 생성물이라는 사실을 표시해야 한다. 특히 실제 사람이나 장면처럼 보이게 만든 딥페이크는 보는 사람이 분명히 알아볼 수 있도록 표시해야 한다. 이를 지키지 않으면 바로잡으라는 명령을 받고, 그래도 따르지 않으면 최대 3,000만 원의 <span class="t">과태료</span>를 낼 수 있다. 다만 정부는 처음에는 혼란을 줄이기 위해 최소 1년 동안 과태료를 매기지 않는 <span class="t">계도 기간</span>을 두었다.</p>
+        <p>한계도 지적된다. 표시 의무가 서비스를 만든 회사에만 있어서, 이용자가 표시를 지우거나 다른 곳으로 퍼 나르는 과정에서 표시가 사라지면 막기 어렵다는 것이다.</p>
+        <p>한편 검찰과 경찰은 6월 3일 지방선거를 앞두고, AI로 만든 가짜 뉴스를 중대한 범죄로 보고 엄하게 처벌하겠다고 밝혔다.</p>
+        <figure class="fig">
+          <p class="fig-title">AI로 만든 결과물, 이렇게 표시해요</p>
+          <div class="labels">
+            <div class="label-card">
+              <div class="mock" aria-hidden="true"><span class="sun"></span><span class="badge">AI로 만든 영상입니다</span></div>
+              <b>눈에 보이는 표시</b>화면에 ‘AI로 만든 영상’ 같은 문구를 넣어 누구나 바로 알아볼 수 있게 해요. 딥페이크에는 이렇게 분명한 표시가 필요해요.
+            </div>
+            <div class="label-card">
+              <div class="mock" aria-hidden="true"><span class="sun"></span><span class="wm"></span><span class="wm-tag">기계만 읽는 표시</span></div>
+              <b>눈에 보이지 않는 표시</b><span class="t">워터마크</span>처럼 사람 눈에는 잘 보이지 않지만 기계가 읽을 수 있는 정보를 파일 안에 넣어요.
+            </div>
+          </div>
+          <figcaption>그림은 이해를 돕기 위한 예시예요. 자료: AI 기본법 관련 보도</figcaption>
+        </figure>
+        <p class="basis">이 기사는 AI 기본법 시행을 다룬 보도와 정책 해설, 검찰·경찰의 지방선거 대응 보도를 바탕으로 다시 썼어요. 원래 자료는 아래 출처 8~13번에 있어요.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="sec" id="ai-future">
+    <h2 class="sec-title"><span class="n">2</span>미래에는 어떤 문제가 생길까요?</h2>
+    <p class="sec-lead">국제 보고서와 언론 보도를 바탕으로 미래를 전망한 글입니다.</p>
+    <article class="essay">
+      <h3>진짜와 가짜를 구별하기 어려운 미래</h3>
+      <p class="para">인공지능(AI) 기술은 아주 빠르게 발전하고 있습니다. 예전에는 전문가가 오랜 시간을 들여야 만들 수 있던 합성 사진이나 영상을, 이제는 스마트폰으로도 쉽게 만들 수 있습니다. 짧은 목소리만 있으면 그 사람처럼 말하는 가짜 목소리를 만들 수도 있습니다. 이런 기술은 세상을 떠난 독립운동가의 얼굴과 목소리를 되살리거나 영화를 만드는 것처럼 좋은 일에 쓰이기도 합니다. 하지만 나쁜 마음을 먹은 사람에게는 손쉬운 범죄 도구가 될 수 있습니다.</p>
+      <p class="para">앞으로 가장 걱정되는 것은 ‘믿음’이 무너지는 일입니다. 지금까지 사람들은 사진이나 영상, 귀로 들은 목소리를 중요한 증거로 믿어 왔습니다. 그런데 AI가 진짜와 똑같은 가짜를 만들 수 있게 되면, 뉴스 영상도, 가족의 전화 목소리도 쉽게 믿을 수 없게 됩니다. 반대 경우도 문제입니다. 잘못을 저지른 사람이 진짜 증거 영상을 보고도 “AI로 만든 가짜”라고 우기며 책임을 피하려 할 수도 있습니다.</p>
+      <p class="para">이런 혼란은 사회 전체를 흔들 수 있습니다. 세계경제포럼(WEF)이 2026년 1월에 발표한 ‘세계 위험 보고서’에서 잘못된 정보와 <span class="t">허위 정보</span>는 앞으로 2년 동안 세계가 마주할 위험 가운데 2위로 꼽혔습니다. 또 AI 기술이 가져올 나쁜 영향은 앞으로 10년 동안의 위험 가운데 5위에 올랐습니다. 선거를 앞두고 후보에 대한 가짜 영상이 퍼지면 사람들은 잘못된 정보를 믿고 투표할 수 있습니다. 서로를 믿지 못하는 사람이 많아지면 사회는 여러 갈래로 나뉠 수도 있습니다.</p>
+      <p class="para">범죄의 모습도 달라질 것입니다. AI를 쓰면 한 사람이 수많은 사람에게, 저마다에게 맞춘 사기 문자나 전화를 한꺼번에 보낼 수 있습니다. 실제로 기업의 돈을 노리거나 자동으로 수많은 사람에게 피싱 공격을 하는 데 AI가 쓰인 사례가 보고되고 있습니다. 우리가 누리 소통망(SNS)에 올린 사진, 영상, 목소리가 범죄의 재료가 될 수도 있습니다. 겉으로는 보통 안경처럼 보이는 AI 안경으로 다른 사람을 몰래 촬영하는 일도 생겼습니다.</p>
+      <p class="para">물론 과학 기술은 이런 범죄를 막는 데에도 쓰입니다. 가짜 목소리와 영상을 찾아내는 탐지 AI가 개발되고, AI로 만든 것에 표시를 하도록 하는 법도 생겼습니다. 하지만 탐지 기술이 발전하면 범죄 기술도 그것을 피하는 방향으로 발전합니다. 창과 방패처럼 서로 쫓고 쫓기는 싸움이 계속되는 것입니다. 또 범죄자가 다른 나라에 있는 컴퓨터(서버)를 거쳐 범죄를 저지르면 수사하기도 어렵습니다. 기술과 법만으로는 이 문제를 완전히 막기 어렵다는 뜻입니다.</p>
+      <p class="para">AI는 앞으로 우리 삶 곳곳에서 더 많이 쓰일 것입니다. 편리한 AI 기술과 함께 안전하게 살아가려면 과학 기술과 법, 그리고 우리 한 사람 한 사람이 각각 어떤 역할을 해야 할지 함께 생각해 보아야 합니다.</p>
+    </article>
+  </section>
+
+
+  <aside class="gloss" id="ai-gloss">
+    <h2>낱말 풀이</h2>
+    <dl>
+      <dt>인공지능(AI)</dt><dd>사람처럼 배우고 판단하도록 만든 컴퓨터 기술</dd>
+      <dt>딥페이크</dt><dd>인공지능 기술(딥러닝)과 가짜(페이크)를 합친 말. AI로 진짜처럼 만든 가짜 사진이나 영상</dd>
+      <dt>피의자</dt><dd>범죄를 저질렀다고 의심받아 수사를 받는 사람</dd>
+      <dt>합성</dt><dd>여러 사진이나 소리를 합쳐 하나로 만드는 것</dd>
+      <dt>보이스피싱</dt><dd>전화로 다른 사람인 척 속여 돈이나 개인 정보를 빼앗는 범죄</dd>
+      <dt>딥보이스</dt><dd>AI로 특정한 사람의 목소리를 흉내 내어 만든 가짜 목소리</dd>
+      <dt>과태료</dt><dd>법에서 정한 의무를 지키지 않았을 때 내야 하는 돈</dd>
+      <dt>계도 기간</dt><dd>새 규칙을 바로 처벌하지 않고, 먼저 알리고 안내하는 기간</dd>
+      <dt>워터마크</dt><dd>사진이나 영상에 넣는 표시. 눈에 보이게 넣기도 하고, 기계만 읽을 수 있게 숨겨 넣기도 해요.</dd>
+      <dt>허위 정보</dt><dd>사실이 아닌데 사실처럼 꾸민 정보</dd>
+    </dl>
+  </aside>
+
+  <section class="refs" id="ai-refs">
+    <h2>출처</h2>
+    <h3>기사 1 · 어려지는 AI 합성 범죄</h3>
+    <ol>
+      <li>머니투데이(2026. 7. 7.), [2026 u클린] 딥페이크 범죄 저연령화 기사(경찰청 집중 단속 결과). <a href="https://www.mt.co.kr/article/2026070618301274553">https://www.mt.co.kr/article/2026070618301274553</a></li>
+      <li>머니투데이(2026. 7. 6.), [2026 u클린] 더 어려지는 딥페이크 범죄 연령대 기사. <a href="https://www.mt.co.kr/article/2026070123132832713">https://www.mt.co.kr/article/2026070123132832713</a></li>
+      <li>머니투데이(2026. 7. 19.), 「“딥페이크, 장난한 거에요”…미성년자도 아청법·학폭에 해당」. <a href="https://www.mt.co.kr/tech/2026/07/19/2026071614451142125">https://www.mt.co.kr/tech/2026/07/19/2026071614451142125</a></li>
+    </ol>
+    <h3>기사 2 · 딥보이스 보이스피싱</h3>
+    <ol start="4">
+      <li>딜사이트(2026. 9. 25.), 「“목소리도 못 믿는다”…AI 보이스피싱에 통신사도 ‘진땀’」. <a href="https://dealsite.co.kr/articles/169548">https://dealsite.co.kr/articles/169548</a></li>
+      <li>노컷뉴스, 「사람은 못 듣는 딥보이스 흔적, AI가 잡아낸다」. <a href="https://www.nocutnews.co.kr/issue/plan/37599?c=35706">https://www.nocutnews.co.kr/issue/plan/37599?c=35706</a></li>
+      <li>다음 뉴스(2026. 5. 17.), 「[배종찬의 보안 빅데이터] 사람 목소리를 훔쳐가는 AI 보이스피싱」. <a href="https://v.daum.net/v/20260517092013974">https://v.daum.net/v/20260517092013974</a></li>
+      <li>매일신문(2026. 9. 24.), AI 보이스피싱 대응 보도. <a href="https://www.imaeil.com/page/view/2026092412183769378">https://www.imaeil.com/page/view/2026092412183769378</a></li>
+    </ol>
+    <h3>기사 3 · AI 기본법</h3>
+    <ol start="8">
+      <li>KB Think, 「AI 기본법 시행ㅣAI 산업에 어떤 변화가 있을지 살펴봐요」. <a href="https://kbthink.com/life/daily/ai-basic-act.html">https://kbthink.com/life/daily/ai-basic-act.html</a></li>
+      <li>플로우 블로그(2026. 6.), AI 기본법 안내. <a href="https://platform.flow.team/blog/korea-ai-basic-law-2026-guide-for-workers">https://platform.flow.team/blog/korea-ai-basic-law-2026-guide-for-workers</a></li>
+      <li>위키독스(2026. 8.), 「AI로 만든 이미지, 블로그에 올릴 때 표시해야 하나?」. <a href="https://wikidocs.net/blog/@openwiki/28121/">https://wikidocs.net/blog/@openwiki/28121/</a></li>
+      <li>헤럴드경제(2026. 1. 21.), 「세계 첫 AI 기본법 시행 ‘AI 동영상 워터마크 필수’」. <a href="https://www.heraldk.com/article/2026012118293709444">https://www.heraldk.com/article/2026012118293709444</a></li>
+      <li>뉴시스(2026. 1. 10.), 「“AI기본법 워터마크 의무 있지만…딥페이크 피해자 보호 보완 필요”」. <a href="https://mobile.newsis.com/view/NISX20260109_0003471698">https://mobile.newsis.com/view/NISX20260109_0003471698</a></li>
+      <li>OECD.AI 사건 기록(2026. 2. 26.), 지방선거 앞 검찰·경찰의 AI 가짜뉴스 엄정 대응 보도 모음. <a href="https://oecd.ai/en/incidents/2026-02-26-1db5">https://oecd.ai/en/incidents/2026-02-26-1db5</a></li>
+    </ol>
+    <h3>설명글 · 진짜와 가짜를 구별하기 어려운 미래</h3>
+    <ol start="14">
+      <li>뉴시스(2026. 1. 14.), 「WEF 보고서 “글로벌 패권 경쟁과 전략적 대립, 2026년 최대 단기 리스크”」. <a href="https://www.newsis.com/view/NISX20260114_0003477334">https://www.newsis.com/view/NISX20260114_0003477334</a></li>
+      <li>파이낸셜뉴스(2026. 8. 15.), ‘AI 날개 단 범죄’ 기획 기사. <a href="https://www.fnnews.com/news/202608150700528053">https://www.fnnews.com/news/202608150700528053</a></li>
+      <li>파이낸셜뉴스(2026. 4. 29.), 「몇초면 사진 합성·목소리 조작… 범죄 수단 된 딥페이크 기술[AI의 역습]」. <a href="https://www.fnnews.com/news/202604291824576993">https://www.fnnews.com/news/202604291824576993</a></li>
+      <li>경인일보, 초록우산 아동권리 옹호단 어린이 기고(딥페이크의 쓰임과 위험). <a href="https://www.kyeongin.com/article/1718683">https://www.kyeongin.com/article/1718683</a></li>
+    </ol>
+  </section>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var NS = "http://www.w3.org/2000/svg";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- 화면 전환 ---------- */
+  var views = ["home", "birth", "environment", "ai-crime"];
+  function show() {
+    var h = (location.hash || "").replace("#", "");
+    var v = views.indexOf(h) >= 0 ? h : "home";
+    document.querySelectorAll("[data-view]").forEach(function (el) { el.hidden = el.getAttribute("data-view") !== v; });
+    window.scrollTo(0, 0);
+    drawAll();
+  }
+  window.addEventListener("hashchange", show);
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-jump]");
+    if (!b) return;
+    var t = document.getElementById(b.getAttribute("data-jump"));
+    if (t) t.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  });
+
+  /* ---------- 그래프 자료 ---------- */
+  var DATA = {
+    "birth-births": { type: "col", dec: 1, data: [["2015",43.8],["2016",40.6],["2017",35.8],["2018",32.7],["2019",30.3],["2020",27.2],["2021",26.1],["2022",24.9],["2023",23.0],["2024",23.8],["2025",25.4]], tip: "만 명" },
+    "birth-grade1": { type: "col", dec: 1, data: [["2023",40.2],["2024",35.4],["2025",32.4],["2026",29.8,1],["2027",27.8,1],["2028",26.2,1],["2029",24.8,1],["2030",23.2,1],["2031",22.0,1]], tip: "만 명" },
+    "env-heat": { type: "group", dec: 1, cats: ["폭염일수", "열대야일수"], series: [{ name: "1973~1982년", color: "--s1", values: [8.3, 4.1] }, { name: "2016~2025년", color: "--s2", values: [18.3, 12.2] }], tip: "일" },
+    "env-plastic": { type: "col", dec: 2, data: [["2019년",3.53],["2060년(예상)",10.14,1]], tip: "억 톤" },
+    "env-survey": { type: "hbar", unit: "%", data: [["이상 기후",54.1],["플라스틱과 쓰레기",49.4],["미세먼지",42.5]], max: 60 },
+    "ai-cyber": { type: "hbar", unit: "%", data: [["초등학생",3.2],["중학생",1.3],["고등학생",2.3]], max: 4 },
+    "birth-waffle": { type: "waffle", parts: [["--s3",10],["--s1",69],["--s2",21]] },
+    "birth-stack": { type: "stack", rows: [["2022년",[11.5,71.1,17.4]],["2072년",[6.6,45.8,47.7]]], colors: ["--s3","--s1","--s2"] }
+  };
+
+  function el(tag, attrs, parent) {
+    var n = document.createElementNS(NS, tag);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(n);
+    return n;
+  }
+  function fmt(v, d) { return v.toFixed(d); }
+  function niceStep(max) {
+    var raw = max / 4, p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / p;
+    var s = f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10;
+    return s * p;
+  }
+  function topPath(x, y, w, h, r) {
+    r = Math.min(r, w / 2, h);
+    return "M" + x + "," + (y + h) + "L" + x + "," + (y + r) + "Q" + x + "," + y + " " + (x + r) + "," + y +
+      "L" + (x + w - r) + "," + y + "Q" + (x + w) + "," + y + " " + (x + w) + "," + (y + r) + "L" + (x + w) + "," + (y + h) + "Z";
+  }
+
+  /* 세로 막대(한 계열 또는 묶음) */
+  function drawColumns(box, cfg) {
+    var W = Math.max(280, box.clientWidth), H = 230;
+    var padL = 34, padR = 6, padT = 22, padB = 28;
+    var groups, nPer;
+    if (cfg.type === "group") {
+      groups = cfg.cats.map(function (c, i) { return { label: c, bars: cfg.series.map(function (s) { return { v: s.values[i], color: "var(" + s.color + ")", name: s.name }; }) }; });
+      nPer = cfg.series.length;
+    } else {
+      groups = cfg.data.map(function (d) { return { label: d[0], bars: [{ v: d[1], color: d[2] ? "var(--s1-proj)" : "var(--s1)", proj: !!d[2] }] }; });
+      nPer = 1;
+    }
+    var max = 0; groups.forEach(function (g) { g.bars.forEach(function (b) { max = Math.max(max, b.v); }); });
+    var step = niceStep(max), top = Math.ceil(max / step) * step;
+    if (top - max < step * 0.18) top += step;
+    var ph = H - padT - padB, pw = W - padL - padR;
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H, width: W, height: H, "aria-hidden": "true" });
+    for (var t = 0; t <= top + 1e-9; t += step) {
+      var y = padT + ph - (t / top) * ph;
+      el("line", { x1: padL, x2: W - padR, y1: y, y2: y, stroke: t === 0 ? "var(--axis)" : "var(--grid)", "stroke-width": 1 }, svg);
+      var tl = el("text", { x: padL - 6, y: y + 4, "text-anchor": "end", "font-size": 11.5, fill: "var(--muted)" }, svg);
+      tl.textContent = (cfg.dec >= 2 ? fmt(t, 0) : (t % 1 ? fmt(t, 1) : fmt(t, 0)));
+    }
+    var slot = pw / groups.length;
+    var bw = Math.min(24, (slot * 0.62 - (nPer - 1) * 2) / nPer);
+    var labelSize = slot < 40 ? 10.5 : 12;
+    var narrow = slot < 36;
+    var vals = []; groups.forEach(function (g) { vals.push(g.bars[0].v); });
+    var minI = vals.indexOf(Math.min.apply(null, vals));
+    groups.forEach(function (g, gi) {
+      var totalW = nPer * bw + (nPer - 1) * 2;
+      var x0 = padL + slot * gi + (slot - totalW) / 2;
+      g.bars.forEach(function (b, bi) {
+        var h = (b.v / top) * ph, x = x0 + bi * (bw + 2), y = padT + ph - h;
+        var p = el("path", { d: topPath(x, y, bw, h, 4), fill: b.color }, svg);
+        var tt = el("title", {}, p); tt.textContent = g.label + (b.name ? " · " + b.name : "") + ": " + fmt(b.v, cfg.dec) + " " + cfg.tip + (b.proj ? " (예상)" : "");
+        if (!narrow || gi === 0 || gi === groups.length - 1 || gi === minI) {
+          var vl = el("text", { x: x + bw / 2, y: y - 6, "text-anchor": "middle", "font-size": labelSize, "font-weight": 700, fill: b.proj ? "var(--ink-2)" : "var(--ink)" }, svg);
+          vl.textContent = fmt(b.v, cfg.dec);
+        }
+      });
+      var xl = el("text", { x: padL + slot * gi + slot / 2, y: H - 8, "text-anchor": "middle", "font-size": slot < 40 ? 10.5 : 12.5, fill: "var(--ink-2)" }, svg);
+      xl.textContent = (narrow && /^\d{4}$/.test(g.label)) ? "’" + g.label.slice(2) : g.label;
+    });
+    box.replaceChildren(svg);
+  }
+
+  /* 가로 막대 */
+  function drawHBars(box, cfg) {
+    var wrap = document.createElement("div"); wrap.className = "hbars";
+    cfg.data.forEach(function (d) {
+      var row = document.createElement("div"); row.className = "hbar";
+      row.innerHTML = '<span class="lab"></span><span class="track"><span class="bar"></span><span class="val"></span></span>';
+      row.querySelector(".lab").textContent = d[0];
+      row.querySelector(".bar").style.width = (d[1] / cfg.max * 82) + "%";
+      row.querySelector(".val").textContent = d[1].toFixed(1) + cfg.unit;
+      wrap.appendChild(row);
+    });
+    box.replaceChildren(wrap);
+  }
+
+  /* 100칸 그림 */
+  function drawWaffle(box, cfg) {
+    var g = document.createElement("div"); g.className = "waffle";
+    cfg.parts.forEach(function (p) { for (var i = 0; i < p[1]; i++) { var c = document.createElement("i"); c.style.background = "var(" + p[0] + ")"; g.appendChild(c); } });
+    box.replaceChildren(g);
+  }
+
+  /* 100% 막대 */
+  function drawStack(box, cfg) {
+    var frag = document.createElement("div");
+    cfg.rows.forEach(function (r) {
+      var row = document.createElement("div"); row.className = "stack-row";
+      var yr = document.createElement("span"); yr.className = "yr"; yr.textContent = r[0];
+      var st = document.createElement("div"); st.className = "stack";
+      r[1].forEach(function (v, i) {
+        var s = document.createElement("div");
+        s.style.flex = v + " 1 0"; s.style.background = "var(" + cfg.colors[i] + ")";
+        s.title = r[0] + ": " + v + "%"; s.dataset.v = v + "%";
+        st.appendChild(s);
+      });
+      row.appendChild(yr); row.appendChild(st); frag.appendChild(row);
+    });
+    box.replaceChildren(frag);
+    box.querySelectorAll(".stack div").forEach(function (s) { s.textContent = s.clientWidth >= 46 ? s.dataset.v : ""; });
+  }
+
+  function draw(box) {
+    if (!box.clientWidth) return;
+    var cfg = DATA[box.getAttribute("data-chart")];
+    if (!cfg) return;
+    if (cfg.type === "col" || cfg.type === "group") drawColumns(box, cfg);
+    else if (cfg.type === "hbar") drawHBars(box, cfg);
+    else if (cfg.type === "waffle") drawWaffle(box, cfg);
+    else if (cfg.type === "stack") drawStack(box, cfg);
+    box.dataset.w = box.clientWidth;
+  }
+  function drawAll() { document.querySelectorAll("[data-chart]").forEach(draw); }
+
+  if ("ResizeObserver" in window) {
+    var ro = new ResizeObserver(function (entries) {
+      entries.forEach(function (en) { var b = en.target; if (b.clientWidth && String(b.clientWidth) !== b.dataset.w) draw(b); });
+    });
+    document.querySelectorAll("[data-chart]").forEach(function (b) { ro.observe(b); });
+  } else {
+    window.addEventListener("resize", drawAll);
+  }
+
+  show();
+})();
+</script>
+</body>
+</html>
